@@ -1,4 +1,6 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import  {useHistory} from 'react-router-dom'
 
 // react-bootstrap components
 import {
@@ -12,12 +14,30 @@ import {
 
 
 function Login() {
+    const history = useHistory();
+    const [email, setEmail] = useState('')
+    // console.log(email)
+    const [password, setPassword] = useState('')
+    // console.log(password)
+
+    const submitHandler = async (e)=>{
+        e.preventDefault();
+        try {
+           const {data} = await axios.post('http://localhost:5001/api/v1/admin/login',{email,password})
+        //    console.log(data)
+           history.push('/admin/dashboard')
+           localStorage.setItem('accessToken',data.accessToken)
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
   return (
     <>
         <Container className="centered">
             <Row>
             <Col className="mx-auto" lg="4" md="8" >
-                <Form action="" className="form" method="">
+                <Form action="" className="form" >
                     <Card className="card-login">
                         <Card.Header className="text-center">
                             <div className="logo-holder d-inline-block align-top">
@@ -26,18 +46,18 @@ function Login() {
                         </Card.Header>
                         <Card.Body>
                             <Card.Body>
-                                <Form.Group>
+                                <Form.Group onChange={(e) => setEmail(e.target.value)}>
                                     <label>Email address <span className="text-danger">*</span></label>
                                     <Form.Control placeholder="Enter Email" type="text" name="email"  />
                                 </Form.Group>
-                                <Form.Group>
+                                <Form.Group onChange={(e) => setPassword(e.target.value)}>
                                     <label>Password <span className="text-danger">*</span></label>
                                     <Form.Control placeholder="Enter Password" type="password" name="password" />
                                 </Form.Group>
                             </Card.Body>
                         </Card.Body>
                         <Card.Footer className="ml-auto mr-auto">
-                            <Button className="btn-filled" type="button">Login</Button>
+                            <Button className="btn-filled" type="button" onClick={submitHandler}>Login</Button>
                         </Card.Footer>
                     </Card>
                 </Form>

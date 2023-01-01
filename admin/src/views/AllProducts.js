@@ -82,7 +82,7 @@ function AllProducts() {
   const handleDelete = (id) => {
     console.log(id);
     axios
-      .delete(`${url}/delete/${id}`)
+      .delete(`http://localhost:5001/api/v1/admin/product/${id}`)
       .then((res) => {
         Notification("Deleted", res.data.message, "success");
         setIsloading(true);

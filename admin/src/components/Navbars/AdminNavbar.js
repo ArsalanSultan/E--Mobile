@@ -16,12 +16,13 @@
 
 */
 import React, { Component } from "react";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { Navbar, Container, Nav, Dropdown, Button } from "react-bootstrap";
 
 import routes from "routes.js";
 
 function Header() {
+  const history = useHistory()
   const date = new Date().toLocaleDateString();
 
   const location = useLocation();
@@ -45,6 +46,12 @@ function Header() {
     }
     return "Brand";
   };
+  const submitHandler = async (e) =>{
+    e.preventDefault();
+    localStorage.clear();
+    history.push('/unauth/login')
+    
+  }
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
@@ -201,7 +208,7 @@ function Header() {
                 href="#pablo"
                 onClick={(e) => e.preventDefault()}
               >
-                <span className="no-icon">Log out</span>
+                <span className="no-icon" onClick={submitHandler}>Log out</span>
               </Nav.Link>
             </Nav.Item>
           </Nav>

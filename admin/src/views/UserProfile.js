@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useHistory } from "react-router";
+import axios from 'axios'
 // react-bootstrap components
 import {
   Button,
@@ -15,6 +16,8 @@ import {
 
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { cleanData } from "jquery";
+
 
 function User() {
   // useHistory
@@ -25,6 +28,8 @@ function User() {
   const [email, setEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [user, setUser] = useState("");
+  // console.log(user)
 
   // banner side useState
   const [bannerTitle, setBannerTitle] = useState("");
@@ -66,6 +71,33 @@ function User() {
   const handleDelete = (id) => {
     console.log(id);
   };
+
+    useEffect(async() => {
+      try {
+        
+      
+      const token = localStorage.getItem('accessToken')
+      if(token){
+      
+      // console.log(token)
+      const config ={
+          headers: {
+              'token': `Bearer ${token}`
+          }
+      }
+
+      // console.log("config ===", config)
+      const response = await axios.get('http://localhost:5001/api/v1/me',config).then(()=>setUser(response.data))
+      
+      
+      }
+    } catch (error) {
+        console.log(error)
+    }
+    }, [])
+    
+
+
   return (
     <>
       <Container fluid>

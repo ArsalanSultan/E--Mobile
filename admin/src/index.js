@@ -25,6 +25,7 @@ import "./assets/css/animate.min.css";
 import "./assets/scss/light-bootstrap-dashboard-react.scss?v=2.0.0";
 import "./assets/css/demo.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import Login from './views/Login'
 
 import AdminLayout from "layouts/Auth.js";
 import UnAuthLayout from "layouts/UnAuth.js";
@@ -34,9 +35,14 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Switch>
+     
+       
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route path="/unauth" render={(props) => <UnAuthLayout {...props} />} />
-      <Redirect from="/" to="/admin/dashboard" />
+      <Redirect  from="/" to="/unauth/login" />
+     
+     {/* <Redirect  from="/" to="/admin/dashboard" /> */}
+      
     </Switch>
   </BrowserRouter>
 );
