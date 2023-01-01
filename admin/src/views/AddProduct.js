@@ -36,11 +36,16 @@ function AddProduct() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(name, brand, price, stock, image, description);
+    console.log(name, brand, price, stock, image.name, description);
 
     // handing image file
     const formData = new FormData();
     formData.append("file", image);
+
+    if (formData) {
+      const imagess = formData.get("image");
+      console.log(imagess);
+    }
     axios
       .post(`${url}/new`, {
         name,
