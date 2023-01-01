@@ -16,7 +16,9 @@ function AllProducts() {
   const [data, setData] = useState([]);
   const [isloading, setIsloading] = useState(true);
   const history = useHistory();
+  // api url
   const url = "http://localhost:5001/api/v1/products";
+
   // useEffect
 
   useEffect(() => {
