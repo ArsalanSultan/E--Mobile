@@ -18,6 +18,7 @@ function AllProducts() {
   const history = useHistory();
   // api url
   const url = "http://localhost:5001/api/v1/products";
+  const Updateurl = "http://localhost:5001/api/v1/admin/product";
 
   // useEffect
 
@@ -41,15 +42,6 @@ function AllProducts() {
     }
   }, [isloading]);
 
-  // checking data
-  // data.products.map((data) => {
-  //   data.images.map((data) => {
-  //     console.log("Link is here", data.url);
-  //   });
-  //   // data.console.log("simple data", data.images.map((link)=>{
-
-  //   // }));
-  // });
   // toast notification
   const Notification = (title, text, icon) => {
     Swal.fire({
@@ -145,7 +137,7 @@ function AllProducts() {
                           <td>{da.description}</td>
                           <td>{da.stock}</td>
                           <td>
-                            <Link to={`product/update/${da._id}`}>
+                            <Link to={`${da._id}`}>
                               <button className="btn btn-primary mx-1 my-s-1">
                                 Edit
                               </button>

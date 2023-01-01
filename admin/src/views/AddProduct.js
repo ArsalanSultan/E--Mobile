@@ -20,7 +20,7 @@ function AddProduct() {
   const [image, setImage] = useState(undefined);
 
   // api url
-  const url = "http://localhost:5000/v1/admin/products";
+  const url = "http://localhost:5001/api/v1/admin/product";
 
   // toast notification
   const Saved = () => {
@@ -42,10 +42,6 @@ function AddProduct() {
     const formData = new FormData();
     formData.append("file", image);
 
-    if (formData) {
-      const imagess = formData.get("image");
-      console.log(imagess);
-    }
     axios
       .post(`${url}/new`, {
         name,
