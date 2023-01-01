@@ -16,14 +16,15 @@ function AllProducts() {
   const [data, setData] = useState([]);
   const [isloading, setIsloading] = useState(true);
   const history = useHistory();
-  const url = "http://localhost:5000/v1/admin/products";
+  const url = "http://localhost:5001/api/v1/products";
   // useEffect
 
   useEffect(() => {
     console.log("Data is herr");
     axios
-      .get(`${url}/list`)
+      .get(url)
       .then((data) => {
+        console.log(data);
         setData(data.data);
         console.log(data.data);
 
@@ -117,9 +118,9 @@ function AllProducts() {
                   </thead>
                   <tbody>
                     {isloading ? (
-                      <span className="mx-auto">
+                      <div className="mx-auto">
                         <Loader />
-                      </span>
+                      </div>
                     ) : data.products.length == 0 ? (
                       <h2 className="alert alert-danger w-75 mx-auto">
                         No product To show Please Add one
