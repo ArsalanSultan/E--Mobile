@@ -16,15 +16,20 @@ function AllProducts() {
   const [data, setData] = useState([]);
   const [isloading, setIsloading] = useState(true);
   const history = useHistory();
-  const url = "http://localhost:5000/v1/admin/products";
+  // api url
+  const url = "http://localhost:5001/api/v1/products";
+
   // useEffect
 
   useEffect(() => {
-    console.log("Data is here");
+    console.log("Data is herr");
     axios
-      .get(`${url}/list`)
+      .get(url)
       .then((data) => {
+        console.log(data);
         setData(data.data);
+        console.log(data.data);
+
         setIsloading(false);
       })
       .catch((err) => {
@@ -36,6 +41,15 @@ function AllProducts() {
     }
   }, [isloading]);
 
+  // checking data
+  // data.products.map((data) => {
+  //   data.images.map((data) => {
+  //     console.log("Link is here", data.url);
+  //   });
+  //   // data.console.log("simple data", data.images.map((link)=>{
+
+  //   // }));
+  // });
   // toast notification
   const Notification = (title, text, icon) => {
     Swal.fire({
@@ -96,9 +110,9 @@ function AllProducts() {
                       <th className="border-0">Product ID</th>
                       <th className="border-0">Name</th>
                       <th className="border-0">Brand</th>
-                      <th className="border-0">Colors</th>
+                      {/* <th className="border-0">Colors</th> */}
                       <th className="border-0">Price</th>
-                      <th className="border-0">Image</th>
+                      {/* <th className="border-0">Image</th> */}
                       <th className="border-0">Details</th>
                       <th className="border-0">Stock</th>
                       <th className="border-0">Action</th>
@@ -106,9 +120,9 @@ function AllProducts() {
                   </thead>
                   <tbody>
                     {isloading ? (
-                      <span className="mx-auto">
+                      <div className="mx-auto">
                         <Loader />
-                      </span>
+                      </div>
                     ) : data.products.length == 0 ? (
                       <h2 className="alert alert-danger w-75 mx-auto">
                         No product To show Please Add one
@@ -116,21 +130,20 @@ function AllProducts() {
                     ) : (
                       data.products.map((da) => (
                         <tr key={da._id}>
-                          <td>{da.productId}</td>
-                          <td>{da.productName}</td>
-                          <td>{da.productBrand}</td>
-                          <td>{da.productColor}</td>
-                          <td>{da.productPrice}</td>
-                          <td>
-                            {
-                              <img
-                                src={`${da.productImage}`}
-                                alt={`${da.productImage}`}
-                              />
-                            }
-                          </td>
-                          <td>{da.productDetails}</td>
-                          <td>{da.productStock}</td>
+                          <td>{da._id}</td>
+                          <td>{da.name}</td>
+                          <td>{da.brand}</td>
+                          {/* <td>{da.productColor}</td> */}
+                          <td>{da.price}</td>
+                          {/* <td>
+                            {da.images.map((img) => (
+                              <div key={img._id}>
+                                <img src={img.url} alt={da.name} />
+                              </div>
+                            ))}
+                          </td> */}
+                          <td>{da.description}</td>
+                          <td>{da.stock}</td>
                           <td>
                             <Link to={`product/update/${da._id}`}>
                               <button className="btn btn-primary mx-1 my-s-1">

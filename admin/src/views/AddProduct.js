@@ -6,19 +6,18 @@ import { Button, Card, Form, Container, Row, Col } from "react-bootstrap";
 // toaster alert
 import { ToastContainer, toast } from "react-toastify";
 
+// cloudinary import
+import { CloudinaryContext, Image, Transformation } from "cloudinary-react";
 import Swal from "sweetalert2";
-import { AlertNotify } from "./sharedUI/AlertNotify";
 
 function AddProduct() {
   // useState hook for form data management
-  const [productId, setProductId] = useState("");
-  const [productName, setProductName] = useState("");
-  const [productBrand, setProductBrand] = useState("");
-  const [productColor, setProductColor] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [productStock, setProductStock] = useState("");
-  const [productDetails, setProductDetails] = useState("");
-  const [productImage, setProductImage] = useState("");
+  const [name, setName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [stock, setStock] = useState("");
+  const [image, setImage] = useState(undefined);
 
   // api url
   const url = "http://localhost:5000/v1/admin/products";
@@ -37,34 +36,37 @@ function AddProduct() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    console.log(name, brand, price, stock, image.name, description);
+
+    // handing image file
+    const formData = new FormData();
+    formData.append("file", image);
+
+    if (formData) {
+      const imagess = formData.get("image");
+      console.log(imagess);
+    }
     axios
       .post(`${url}/new`, {
-        productId,
-        productName,
-        productBrand,
-        productColor,
-        productPrice,
-        productStock,
-        productImage,
-        productDetails,
+        name,
+        brand,
+        price,
+        stock,
+        image,
+        description,
       })
       .then((res) => {
         console.log(res.data);
+        Saved();
       })
       .catch((err) => {
         console.log(err);
       });
-    // console.log(
-    //   productId,
-    //   productName,
-    //   brandName,
-    //   productColor,
-    //   productPrice,
-    //   productStock,
-    //   productImage,
-    //   productDetails
-    // );
-    Saved();
+  };
+
+  // handle image upload
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
   };
   return (
     <>
@@ -80,26 +82,13 @@ function AddProduct() {
                   <Row>
                     <Col className="pr-1" md="6">
                       <Form.Group>
-                        <label>Product ID</label>
-                        <Form.Control
-                          placeholder="12"
-                          type="text"
-                          name="productId"
-                          value={productId}
-                          onChange={(e) => setProductId(e.target.value)}
-                          required
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>{" "}
-                    <Col className="pr-1" md="6">
-                      <Form.Group>
                         <label>Product Name</label>
                         <Form.Control
                           placeholder="Samsung A55s"
                           type="text"
-                          name="productName"
-                          value={productName}
-                          onChange={(e) => setProductName(e.target.value)}
+                          name="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                           required
                         ></Form.Control>
                       </Form.Group>
@@ -110,22 +99,9 @@ function AddProduct() {
                         <Form.Control
                           placeholder="Samsung"
                           type="text"
-                          name="brandName"
-                          value={productBrand}
-                          onChange={(e) => setProductBrand(e.target.value)}
-                          required
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="pr-1" md="6">
-                      <Form.Group>
-                        <label>Colors</label>
-                        <Form.Control
-                          placeholder="Red Golden Black"
-                          type="text"
-                          name="productColor"
-                          value={productColor}
-                          onChange={(e) => setProductColor(e.target.value)}
+                          name="brand"
+                          value={brand}
+                          onChange={(e) => setBrand(e.target.value)}
                           required
                         ></Form.Control>
                       </Form.Group>
@@ -136,9 +112,9 @@ function AddProduct() {
                         <Form.Control
                           placeholder="45000"
                           type="Number"
-                          name="productPrice"
-                          value={productPrice}
-                          onChange={(e) => setProductPrice(e.target.value)}
+                          name="price"
+                          value={price}
+                          onChange={(e) => setPrice(e.target.value)}
                           required
                         ></Form.Control>
                       </Form.Group>
@@ -149,9 +125,9 @@ function AddProduct() {
                         <Form.Control
                           placeholder="450"
                           type="Number"
-                          name="productStock"
-                          value={productStock}
-                          onChange={(e) => setProductStock(e.target.value)}
+                          name="stock"
+                          value={stock}
+                          onChange={(e) => setStock(e.target.value)}
                           required
                         ></Form.Control>
                       </Form.Group>
@@ -164,10 +140,10 @@ function AddProduct() {
                         <Form.Control
                           type="file"
                           className="form-control"
-                          name="productImage"
+                          name="file"
                           placeholder="Please select product image"
-                          value={productImage}
-                          onChange={(e) => setProductImage(e.target.value)}
+                          // value={image}
+                          onChange={handleImageChange}
                         />
                       </Form.Group>
                     </Col>
@@ -177,13 +153,11 @@ function AddProduct() {
                       <Form.Group>
                         <label>Details</label>
                         <Form.Control
-                          as="textarea"
-                          rows={3}
-                          placeholder="Ram 3, Camera: 14MP"
+                          placeholder="450"
                           type="text"
-                          name="productDetails"
-                          value={productDetails}
-                          onChange={(e) => setProductDetails(e.target.value)}
+                          name="description"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
                           required
                         ></Form.Control>
                       </Form.Group>
