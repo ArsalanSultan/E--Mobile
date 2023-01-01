@@ -10,19 +10,17 @@ import Loader from "./sharedUI/Loader";
 
 function UpdateProduct() {
   // useState hook for form data management
-  const [productId, setProductId] = useState("");
-  const [productName, setProductName] = useState("");
-  const [brandName, setBrandName] = useState("");
-  const [productColor, setProductColor] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [productStock, setProductStock] = useState("");
-  const [productDetails, setProductDetails] = useState("");
-  const [productImage, setProductImage] = useState("");
+  const [name, setName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [stock, setStock] = useState("");
+  const [image, setImage] = useState("");
 
   // loading state
   const [isloading, setIsloading] = useState(true);
   // state hook to store data for the provided product id
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
   // useHistory
   const history = useHistory();
   const params = useParams();
@@ -49,7 +47,9 @@ function UpdateProduct() {
       .get(`${url}/find/${pid}`)
       .then((res) => {
         console.log(res.data);
-        setData(res.data);
+        const { message, data } = res.data;
+        setData(res.data.data);
+        console.log(data);
         setIsloading(false);
       })
       .catch((err) => {
@@ -61,29 +61,18 @@ function UpdateProduct() {
 
   useEffect(() => {
     if (!isloading) {
-      setProductId(data.data.productId);
-      setProductName(data.data.productName);
-      setBrandName(data.data.productBrand);
-      setProductColor(data.data.productColor);
-      setProductPrice(data.data.productPrice);
-      setProductStock(data.data.productStock);
-      setProductDetails(data.data.productDetails);
+      setName(data.name);
+      setBrand(data.brand);
+      setPrice(data.price);
+      setStock(data.stock);
+      setDescription(data.description);
     }
   }, [isloading]);
   // form submission handling function
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
-    console.log(
-      productId,
-      productName,
-      brandName,
-      productColor,
-      productPrice,
-      productStock,
-      productImage,
-      productDetails
-    );
+
+    console.log(name, brand, price, description, stock, image);
 
     Saved();
     setSuccess("Form Submitted Successfully");
@@ -107,26 +96,13 @@ function UpdateProduct() {
                     <Row>
                       <Col className="pr-1" md="6">
                         <Form.Group>
-                          <label>Product ID</label>
-                          <Form.Control
-                            placeholder="12"
-                            type="text"
-                            name="productId"
-                            value={productId}
-                            onChange={(e) => setProductId(e.target.value)}
-                            required
-                          ></Form.Control>
-                        </Form.Group>
-                      </Col>{" "}
-                      <Col className="pr-1" md="6">
-                        <Form.Group>
                           <label>Product Name</label>
                           <Form.Control
                             placeholder="Samsung A55s"
                             type="text"
-                            name="productName"
-                            value={productName}
-                            onChange={(e) => setProductName(e.target.value)}
+                            name="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             required
                           ></Form.Control>
                         </Form.Group>
@@ -137,22 +113,9 @@ function UpdateProduct() {
                           <Form.Control
                             placeholder="Samsung"
                             type="text"
-                            name="brandName"
-                            value={brandName}
-                            onChange={(e) => setBrandName(e.target.value)}
-                            required
-                          ></Form.Control>
-                        </Form.Group>
-                      </Col>
-                      <Col className="pr-1" md="6">
-                        <Form.Group>
-                          <label>Colors</label>
-                          <Form.Control
-                            placeholder="Red Golden Black"
-                            type="text"
-                            name="productColor"
-                            value={productColor}
-                            onChange={(e) => setProductColor(e.target.value)}
+                            name="brand"
+                            value={brand}
+                            onChange={(e) => setBrand(e.target.value)}
                             required
                           ></Form.Control>
                         </Form.Group>
@@ -163,9 +126,9 @@ function UpdateProduct() {
                           <Form.Control
                             placeholder="45000"
                             type="Number"
-                            name="productPrice"
-                            value={productPrice}
-                            onChange={(e) => setProductPrice(e.target.value)}
+                            name="price"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
                             required
                           ></Form.Control>
                         </Form.Group>
@@ -176,9 +139,9 @@ function UpdateProduct() {
                           <Form.Control
                             placeholder="450"
                             type="Number"
-                            name="productStock"
-                            value={productStock}
-                            onChange={(e) => setProductStock(e.target.value)}
+                            name="stock"
+                            value={stock}
+                            onChange={(e) => setStock(e.target.value)}
                             required
                           ></Form.Control>
                         </Form.Group>
@@ -191,10 +154,10 @@ function UpdateProduct() {
                           <Form.Control
                             type="file"
                             className="form-control"
-                            name="productImage"
+                            name="image"
                             placeholder="Please select product image"
-                            value={productImage}
-                            onChange={(e) => setProductImage(e.target.value)}
+                            value={image}
+                            onChange={(e) => setImage(e.target.value)}
                             required
                           />
                         </Form.Group>
@@ -203,15 +166,15 @@ function UpdateProduct() {
                     <Row>
                       <Col className="pr-1" md="12">
                         <Form.Group>
-                          <label>Details</label>
+                          <label>Description</label>
                           <Form.Control
                             as="textarea"
                             rows={3}
                             placeholder="Ram 3, Camera: 14MP"
                             type="text"
                             name="productDetails"
-                            value={productDetails}
-                            onChange={(e) => setProductDetails(e.target.value)}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                             required
                           ></Form.Control>
                         </Form.Group>

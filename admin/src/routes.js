@@ -54,6 +54,7 @@ const dashboardRoutes = [
     component: AllProducts,
     showInSideBar: true,
     layout: "/admin",
+    exact: true,
   },
   // {
   //   path: "/table",
@@ -64,7 +65,7 @@ const dashboardRoutes = [
   //   layout: "/admin",
   // },
   {
-    path: "/products/new",
+    path: "/add/product",
     name: "Add Product",
     icon: "nc-icon nc-simple-add",
     component: AddProduct,
