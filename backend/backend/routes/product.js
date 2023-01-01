@@ -6,9 +6,9 @@ const { deleteProduct,updateProduct,getProductById, getProducts ,newProduct, cre
 
 router.get('/products', getProducts);
 router.get('/product/:id', getProductById);
-router.post('/admin/product/new', isLoggedIn,authorizeRoles('admin'),newProduct);
-router.put('/admin/product/:id',isLoggedIn, authorizeRoles('admin'),updateProduct);
-router.delete('/admin/product/:id',isLoggedIn, authorizeRoles('admin'),deleteProduct);
+router.post('/admin/product/new', newProduct); // isLoggedIn,authorizeRoles('admin'),
+router.put('/admin/product/:id',updateProduct);//isLoggedIn, authorizeRoles('admin'),
+router.delete('/admin/product/:id',deleteProduct);//isLoggedIn, authorizeRoles('admin'),
 
 router.post('/review',isLoggedIn,createProductReview);
 router.get('/review',isLoggedIn,getProductReviews);

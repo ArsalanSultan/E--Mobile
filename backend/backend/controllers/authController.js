@@ -56,6 +56,41 @@ const user = await User.findOne({ email }).select('+password')
       }
 })
 
+
+
+//login user=>api/v1/admin/login
+const loginAdmin = catchAsyncErrors(async(req,res,next)=>{
+    const {email,password} = req.body;
+    // check if user has entered email and password
+    if(!email || !password){
+        throw new ErrorHandler("please enter email & password",400)
+    }
+    //finding user db
+const user = await User.findOne({ email }).select('+password')
+
+   if(!user){
+    throw new ErrorHandler('Invalid Email or password',401)
+
+     }
+      // checks role of the user
+      const usser= await User.findOne({email})
+      if(usser.role !== 'admin'){
+        throw new ErrorHandler('User is not admin',401)
+      }
+      
+     //checks if password is correct or not
+     const isPasswordMatched = await user.comparePassword(password)
+      if(!isPasswordMatched){
+        throw new ErrorHandler('Invalid Email or password',401)
+      }else{
+      // assign token to user
+      sendToken(user,200,res)
+       
+      }
+})
+
+
+
 // forgot password => api/v1/password/forgot
 const forgotPassword = catchAsyncErrors(async(req,res,next)=>{
     const user = await User.findOne({ email:req.body.email })
@@ -260,3 +295,4 @@ exports.allUsers=allUsers;
 exports.userDetail =userDetail;
 exports.updateUser =updateUser;
 exports.deleteUser = deleteUser;
+exports.loginAdmin = loginAdmin;
