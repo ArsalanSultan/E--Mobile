@@ -18,9 +18,9 @@ const Profile = () => {
                 <figure class='avatar avatar-profile'>
                     <img class="rounded-circle img-fluid" src={user?.avatar.url} alt='userAvatar' />
                 </figure>
-                <a href="#" id="edit_profile" class="btn btn-primary btn-block my-5">
+                <Link to='/me/update' id="edit_profile" class="btn btn-primary btn-block my-5">
                     Edit Profile
-                </a>
+                </Link>
             </div>
      
             <div class="col-12 col-md-5">
@@ -31,13 +31,17 @@ const Profile = () => {
                  
                  <p>{user?.email}</p>
 
-                 <a href="#" class="btn btn-danger btn-block mt-5">
-                    My Orders
-                </a>
+                 <h4>Joined On</h4>
+                 
+                 <p>{String(user?.createdAt).substring(0,10)}</p>
 
-                <a href="#" class="btn btn-primary btn-block mt-3">
+                 <Link to ='/orders/me' class="btn btn-danger btn-block mt-5">
+                    My Orders
+                </Link>
+
+                <Link to='/password/update' class="btn btn-primary btn-block mt-3">
                     Change Password
-                </a>
+                </Link>
             </div>
         </div>
         </Fragment>

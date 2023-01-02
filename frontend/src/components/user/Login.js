@@ -25,6 +25,7 @@ const Login = () => {
            return alert.error(error)
         }
       if(isAuthenticated) {
+        alert.success('Logged In')
         navigate('/')
       }
 

@@ -34,7 +34,9 @@ const Register = () => {
       return alert.error(error);
     }
     if (isAuthenticated) {
+      alert.success('User Registered and Logged In')
       navigate("/");
+      window.location.reload();
     }
   }, [dispatch, alert, error, navigate, isAuthenticated]);
 

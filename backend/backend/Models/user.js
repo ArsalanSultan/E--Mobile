@@ -15,7 +15,7 @@ email:{
        requied:[true,'Please enter you name'],
        unique:true,
        validate:[validator.isEmail,'Please enter valid email address'],
-       select:false
+       select:true
 },
 password:{
     type:String,

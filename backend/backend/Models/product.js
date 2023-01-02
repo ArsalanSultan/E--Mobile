@@ -58,7 +58,7 @@ brand:{
 },
 seller:{
     type:String,
-    required:[true,'please add seller name'],
+  //  required:[true,'please add seller name'],
 
 },
 stock:{
