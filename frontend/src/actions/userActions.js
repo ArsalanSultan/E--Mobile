@@ -15,6 +15,12 @@ import {
     UPDATE_PROFILE_REQUEST ,
     UPDATE_PROFILE_SUCCESS,
     UPDATE_PROFILE_FAIL,
+    FORGOT_PASSWORD_REQUEST,
+    FORGOT_PASSWORD_SUCCESS,
+    FORGOT_PASSWORD_FAIL,
+    NEW_PASSWORD_REQUEST,
+    NEW_PASSWORD_SUCCESS,
+    NEW_PASSWORD_FAIL,
     LOGOUT_SUCCESS,
     LOGOUT_FAIL,
     CLEAR_ERRORS
@@ -86,16 +92,18 @@ export const register = (userData)=> async(dispatch)=>{
 // load user
 export const loadUser = ()=> async(dispatch)=>{
     // console.log("Load user =", )
+   
     try {
          dispatch ({ type: LOAD_USER_REQUEST })
-        const token = localStorage.getItem('accessToken')
+         const token = localStorage.getItem('accessToken')
+        
         // console.log(token)
         const config ={
             headers: {
                 'token': `Bearer ${token}`
             }
         }
-
+         
         // console.log("config ===", config)
         const { data } = await axios.get('/api/v1/me',config)
         
@@ -105,6 +113,7 @@ export const loadUser = ()=> async(dispatch)=>{
             type: LOAD_USER_SUCCESS, 
             payload: data.user
         })
+    
 
     } catch (error) {
         dispatch({
@@ -173,6 +182,64 @@ export const updatePassword = (passwords)=> async(dispatch)=>{
     }
 }
 
+//forgot Password
+export const forgotPassword = (email)=> async(dispatch)=>{
+    try {
+        const token = localStorage.getItem('accessToken')
+        dispatch ({ type: FORGOT_PASSWORD_REQUEST })
+        const config ={
+            headers: {
+                'Content-Type': 'application/json',
+                'token':`Bearer ${token}`
+            }
+        }
+
+
+        const { data } = await axios.post('/api/v1/password/forgot',email,config)
+
+      
+        dispatch ({ 
+            type: FORGOT_PASSWORD_SUCCESS, 
+            payload: data.message
+        })
+
+    } catch (error) {
+        dispatch({
+            type: FORGOT_PASSWORD_FAIL,
+             payload: error.response.data.message
+            })
+    }
+}
+
+//reset password
+export const resetPassword = (resetToken,passwords)=> async(dispatch)=>{
+    try {
+        const accesstoken = localStorage.getItem('accessToken')
+        dispatch ({ type: NEW_PASSWORD_REQUEST })
+        const config ={
+            headers: {
+                'Content-Type': 'application/json',
+                'token':`Bearer ${accesstoken}`
+            }
+        }
+
+
+        const { data } = await axios.put(`/api/v1/password/reset/${resetToken}`,passwords,config)
+
+      
+        dispatch ({ 
+            type: NEW_PASSWORD_SUCCESS, 
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: NEW_PASSWORD_FAIL,
+             payload: error.response.data.message
+            })
+    }
+}
+
 
 
 //logout user
@@ -199,7 +266,7 @@ export const logout = ()=> async(dispatch)=>{
 }
 
 // clear errors
-export const clearErrors =async (dispatch)=>{
+export const clearError =()=> async (dispatch)=>{
     dispatch({
         type: CLEAR_ERRORS
     })

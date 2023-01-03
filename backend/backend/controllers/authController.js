@@ -103,8 +103,8 @@ const forgotPassword = catchAsyncErrors(async(req,res,next)=>{
     await user.save({ validateBeforeSave: false })
 
     //create reset Password url
-    const resetUrl= `${req.protocol}://${req.get('host')}/api/v1/password/reset/${resetToken}`
-
+    //const resetUrl= `${req.protocol}://${req.get('host')}/api/v1/password/reset/${resetToken}`
+     const resetUrl = `http://localhost:3000/password/reset/${resetToken}`
     const message =`Your password reset token is as follows:\n\n${resetUrl}\n\nIf you have not requested this email then ignore it `
     try {
         await sendEmail({
@@ -114,7 +114,7 @@ const forgotPassword = catchAsyncErrors(async(req,res,next)=>{
         })
         res.status(200).json({
             success: true,
-            message: 'Email sent to user'
+            message: 'Please Follow the instructions sent to you in email'
         })
     } catch (error) {
         user.resetPasswordToken = undefined;
