@@ -84,7 +84,7 @@ function AddProduct() {
       });
   };
 
-  // handle image upload
+  // handle product image uploading
   const handleImageChange = (e) => {
     const reader = new FileReader();
     reader.onload = () => {
