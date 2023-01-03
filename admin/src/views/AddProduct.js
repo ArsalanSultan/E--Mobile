@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // react-bootstrap components
 import { Button, Card, Form, Container, Row, Col } from "react-bootstrap";
 
@@ -17,10 +17,28 @@ function AddProduct() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [stock, setStock] = useState("");
-  const [image, setImage] = useState(undefined);
+  const [image, setImage] = useState(null);
 
   // api url
   const url = "http://localhost:5001/api/v1/admin/product";
+
+  // setting tokken
+  useEffect(() => {
+    axios
+      .get("http://localhost:5001/api/v1/me", {
+        headers: {
+          token:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOTlhZGQwNGQwNTQzMjcwZGE5ZjRmYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MjMwNTU5NiwiZXhwIjoxNjcyOTEwMzk2fQ.lGwRNLqADQiOE406PopLAU27PUWZWcgqwlyEeTVby-o",
+        },
+      })
+      .then((res) => {
+        const { accessToken } = res.data;
+        localStorage.setItem("accessToken", accessToken);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   // toast notification
   const Saved = () => {
@@ -35,22 +53,28 @@ function AddProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log(name, brand, price, stock, image.name, description);
-
-    // handing image file
-    const formData = new FormData();
-    formData.append("file", image);
-
+    console.log(name, brand, price, stock, image, description);
+    // setting token
+    const token = localStorage.getItem("accessToken");
+    console.log(image);
     axios
-      .post(`${url}/new`, {
-        name,
-        brand,
-        price,
-        stock,
-        image,
-        description,
-      })
+      .post(
+        `${url}/new`,
+        {
+          name,
+          brand,
+          price,
+          stock,
+          image,
+          seller: "EAhmed",
+          description,
+        },
+        {
+          headers: {
+            token: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
         console.log(res.data);
         Saved();
@@ -62,7 +86,12 @@ function AddProduct() {
 
   // handle image upload
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
   };
   return (
     <>
@@ -136,7 +165,7 @@ function AddProduct() {
                         <Form.Control
                           type="file"
                           className="form-control"
-                          name="file"
+                          name="image"
                           placeholder="Please select product image"
                           // value={image}
                           onChange={handleImageChange}
