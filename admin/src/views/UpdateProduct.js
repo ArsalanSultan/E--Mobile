@@ -30,36 +30,60 @@ function UpdateProduct() {
   const pid = params.id;
 
   // API url
-  const url = "http://localhost:5001/api/v1/product";
+  const url = "http://localhost:5001/api/v1/admin/product";
 
-  // getting product details
-
+  // setting tokken
   useEffect(() => {
     axios
-      .get(`${url}/${pid}`)
+      .get("http://localhost:5001/api/v1/me", {
+        headers: {
+          token:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOTlhZGQwNGQwNTQzMjcwZGE5ZjRmYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MjMwNTU5NiwiZXhwIjoxNjcyOTEwMzk2fQ.lGwRNLqADQiOE406PopLAU27PUWZWcgqwlyEeTVby-o",
+        },
+      })
       .then((res) => {
-        setIsloading(true);
+        const { accessToken } = res.data;
+        localStorage.setItem("accessToken", accessToken);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  // getting token
+  const token = localStorage.getItem("accessToken");
+
+  const SetFormData = () => {
+    setName(data.product.name);
+    setBrand(data.product.brand);
+    setPrice(data.product.price);
+    setStock(data.product.stock);
+    setDescription(data.product.description);
+    setError("");
+  };
+  // getting user data and setting it in the form on load
+  useEffect(() => {
+    setIsloading(true);
+    axios
+      .get(`http://localhost:5001/api/v1/product/${pid}`)
+      .then((res) => {
         setError("");
         setData(res.data);
         console.log(res.data);
-
+        SetFormData();
         setIsloading(false);
-        setName(data.product.name);
-        setBrand(data.product.brand);
-        setPrice(data.product.price);
-        setStock(data.product.stock);
-        setDescription(data.product.description);
       })
       .catch((err) => {
         setError(
-          "Some Erorr occured while auto filling the form, Please fill the updates manually" ||
+          "Some Erorr occered while auto filling the form, Please fill the updates manually" ||
             err
         );
+        setIsloading(false);
       });
   }, []);
 
   // toast notification
-  const Saved = () => {
+  const Updated = () => {
     Swal.fire({
       title: "Product Saved",
       text: "Do you want to continue",
@@ -71,153 +95,183 @@ function UpdateProduct() {
   // form submission handling function
   const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      axios
-        .put(`${url}/${pid}`, {
+    console.log(name, brand, price, stock, image, description);
+    // getting token
+    const token = localStorage.getItem("accessToken");
+    axios
+      .put(
+        `${url}/${pid}`,
+        {
           name,
           brand,
           price,
-          description,
           stock,
           image,
-        })
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      Saved();
-      setSuccess("Form Submitted Successfully");
-    } catch (err) {
-      console.log(err);
-    }
-    console.log(name, brand, price, description, stock, image);
+          seller: "EMobile",
+          description,
+        },
+        {
+          headers: {
+            token: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+        Updated();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
+  // handle product image uploading
+  const handleImageChange = (e) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
   return (
     <>
       <Container fluid>
         <Row>
-          <Col md="12">
-            <Card>
-              <Card.Header>
-                <Card.Title as="h4">Update Product</Card.Title>
-                {error && <span className="alert alert-danger">{error}</span>}
-              </Card.Header>
-              <Card.Body>
-                {isloading ? (
-                  <Loader />
-                ) : (
-                  <Form onSubmit={handleSubmit}>
-                    <Row>
-                      <Col className="pr-1" md="6">
-                        <Form.Group>
-                          <label>Product Name</label>
-                          <Form.Control
-                            placeholder="Samsung A55s"
-                            type="text"
-                            name="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                          ></Form.Control>
-                        </Form.Group>
-                      </Col>
-                      <Col className="pr-1" md="6">
-                        <Form.Group>
-                          <label>Brand Name</label>
-                          <Form.Control
-                            placeholder="Samsung"
-                            type="text"
-                            name="brand"
-                            value={brand}
-                            onChange={(e) => setBrand(e.target.value)}
-                            required
-                          ></Form.Control>
-                        </Form.Group>
-                      </Col>
-                      <Col className="pl-1" md="6">
-                        <Form.Group>
-                          <label>Price</label>
-                          <Form.Control
-                            placeholder="45000"
-                            type="Number"
-                            name="price"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                            required
-                          ></Form.Control>
-                        </Form.Group>
-                      </Col>{" "}
-                      <Col className="pl-1" md="6">
-                        <Form.Group>
-                          <label>Available Stock</label>
-                          <Form.Control
-                            placeholder="450"
-                            type="Number"
-                            name="stock"
-                            value={stock}
-                            onChange={(e) => setStock(e.target.value)}
-                            required
-                          ></Form.Control>
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-1" md="12">
-                        <Form.Group controlId="formFile" className="mb-3">
-                          <Form.Label>Select Product Image</Form.Label>
-                          <Form.Control
-                            type="file"
-                            className="form-control"
-                            name="image"
-                            placeholder="Please select product image"
-                            value={image}
-                            onChange={(e) => setImage(e.target.value)}
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-1" md="12">
-                        <Form.Group>
-                          <label>Description</label>
-                          <Form.Control
-                            as="textarea"
-                            rows={3}
-                            placeholder="Ram 3, Camera: 14MP"
-                            type="text"
-                            name="productDetails"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            required
-                          ></Form.Control>
-                        </Form.Group>
-                      </Col>
-                    </Row>
+          {isloading ? (
+            <Loader />
+          ) : (
+            <Col md="12">
+              <Card>
+                <Card.Header>
+                  <Card.Title as="h4">Update Product</Card.Title>
+                  {error && (
+                    <span className="alert alert-danger">
+                      {error}
+                      <span
+                        onClick={SetFormData}
+                        style={{ cursor: "pointer", color: "blue" }}
+                      >
+                        {" "}
+                        Refresh
+                      </span>{" "}
+                    </span>
+                  )}
+                </Card.Header>
+                <Card.Body>
+                  {isloading ? (
+                    <Loader />
+                  ) : (
+                    <Form onSubmit={handleSubmit}>
+                      <Row>
+                        <Col className="pr-1" md="6">
+                          <Form.Group>
+                            <label>Product Name</label>
+                            <Form.Control
+                              placeholder="Samsung A55s"
+                              type="text"
+                              name="name"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              required
+                            ></Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col className="pr-1" md="6">
+                          <Form.Group>
+                            <label>Brand Name</label>
+                            <Form.Control
+                              placeholder="Samsung"
+                              type="text"
+                              name="brand"
+                              value={brand}
+                              onChange={(e) => setBrand(e.target.value)}
+                              required
+                            ></Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col className="pl-1" md="6">
+                          <Form.Group>
+                            <label>Price</label>
+                            <Form.Control
+                              placeholder="45000"
+                              type="Number"
+                              name="price"
+                              value={price}
+                              onChange={(e) => setPrice(e.target.value)}
+                              required
+                            ></Form.Control>
+                          </Form.Group>
+                        </Col>{" "}
+                        <Col className="pl-1" md="6">
+                          <Form.Group>
+                            <label>Available Stock</label>
+                            <Form.Control
+                              placeholder="450"
+                              type="Number"
+                              name="stock"
+                              value={stock}
+                              onChange={(e) => setStock(e.target.value)}
+                              required
+                            ></Form.Control>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col className="pr-1" md="12">
+                          <Form.Group controlId="formFile" className="mb-3">
+                            <Form.Label>Select Product Image</Form.Label>
+                            <Form.Control
+                              type="file"
+                              className="form-control"
+                              name="image"
+                              placeholder="Please select product image"
+                              // value={image}
+                              onChange={handleImageChange}
+                              required
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col className="pr-1" md="12">
+                          <Form.Group>
+                            <label>Description</label>
+                            <Form.Control
+                              placeholder="Ram 3, Camera: 14MP"
+                              type="text"
+                              name="Link Here"
+                              value={description}
+                              onChange={(e) => setDescription(e.target.value)}
+                              required
+                            ></Form.Control>
+                          </Form.Group>
+                        </Col>
+                      </Row>
 
-                    <Button
-                      className="btn-fill pull-right mt-2"
-                      type="submit"
-                      variant="primary"
-                      // onClick={handleSubmit}
-                    >
-                      Update Product
-                    </Button>
-                    <button
-                      className="btn btn-light mt-2 mx-2"
-                      onClick={history.goBack}
-                      type="button"
-                    >
-                      Back
-                    </button>
-                    <div className="clearfix"></div>
-                  </Form>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
+                      <Button
+                        className="btn-fill pull-right mt-2"
+                        type="submit"
+                        variant="primary"
+                        // onClick={handleSubmit}
+                      >
+                        Update Product
+                      </Button>
+                      <button
+                        className="btn btn-light mt-2 mx-2"
+                        onClick={history.goBack}
+                        type="button"
+                      >
+                        Back
+                      </button>
+                      <div className="clearfix"></div>
+                    </Form>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          )}
         </Row>
       </Container>
     </>

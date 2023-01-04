@@ -54,9 +54,8 @@ function AddProduct() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(name, brand, price, stock, image, description);
-    // setting token
+    // getting token
     const token = localStorage.getItem("accessToken");
-    console.log(image);
     axios
       .post(
         `${url}/new`,
@@ -178,7 +177,7 @@ function AddProduct() {
                       <Form.Group>
                         <label>Details</label>
                         <Form.Control
-                          placeholder="450"
+                          placeholder="Link Here"
                           type="text"
                           name="description"
                           value={description}
