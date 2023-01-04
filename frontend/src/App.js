@@ -4,6 +4,8 @@ import Header from './components/Layouts/Header'
 import Footer from './components/Layouts/Footer'
 import Home from './components/Home'
 import ProductDetail from './components/product/ProductDetail';
+import Cart from './components/cart/Cart'; 
+
 import Login from './components/user/Login';
 import Register from './components/user/Register';
 import Profile from './components/user/Profile';
@@ -28,6 +30,9 @@ useEffect(()=>{
       <Route path="/" element={<Home />} exact />
       <Route path="/search/:keyword" element={<Home />} />
       <Route path="/product/:id" element={<ProductDetail />} exact />
+      <Route path="/cart" element={<Cart />} exact />
+
+
       <Route path="/login" element={<Login />} exact />
       <Route path="/register" element={<Register />} exact />
       <Route path ='/me' element={<Profile />} exact/>
