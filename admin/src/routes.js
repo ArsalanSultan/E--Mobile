@@ -73,13 +73,14 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/admin/product/:id",
+    path: "/product/update/:id",
     name: "Update Product",
     icon: "nc-icon nc-simple-add",
     component: UpdateProduct,
     showInSideBar: false,
     layout: "/admin",
   },
+
   {
     path: "/Payments",
     name: "Payments",

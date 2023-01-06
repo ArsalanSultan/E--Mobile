@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
 // react-bootstrap components
 import { Button, Card, Form, Container, Row, Col } from "react-bootstrap";
@@ -17,18 +17,46 @@ function UpdateProduct() {
   const [stock, setStock] = useState("");
   const [image, setImage] = useState("");
 
+  const [error, setError] = useState("");
+
   // loading state
-  const [isloading, setIsloading] = useState(true);
+  const [isloading, setIsloading] = useState(false);
   // state hook to store data for the provided product id
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   // useHistory
   const history = useHistory();
   const params = useParams();
-
-  // API url
-  const url = "http://localhost:5000/v1/admin/products";
   // Product Id from the url
   const pid = params.id;
+
+  // API url
+  const url = "http://localhost:5001/api/v1/product";
+
+  // getting product details
+
+  useEffect(() => {
+    axios
+      .get(`${url}/${pid}`)
+      .then((res) => {
+        setIsloading(true);
+        setError("");
+        setData(res.data);
+        console.log(res.data);
+
+        setIsloading(false);
+        setName(data.product.name);
+        setBrand(data.product.brand);
+        setPrice(data.product.price);
+        setStock(data.product.stock);
+        setDescription(data.product.description);
+      })
+      .catch((err) => {
+        setError(
+          "Some Erorr occured while auto filling the form, Please fill the updates manually" ||
+            err
+        );
+      });
+  }, []);
 
   // toast notification
   const Saved = () => {
@@ -40,42 +68,31 @@ function UpdateProduct() {
     });
   };
 
-  // useEffect hook to get the data from the given id
-
-  useEffect(() => {
-    axios
-      .get(`${url}/find/${pid}`)
-      .then((res) => {
-        console.log(res.data);
-        const { message, data } = res.data;
-        setData(res.data.data);
-        console.log(data);
-        setIsloading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  // useEffect hook to set the form values like before
-
-  useEffect(() => {
-    if (!isloading) {
-      setName(data.name);
-      setBrand(data.brand);
-      setPrice(data.price);
-      setStock(data.stock);
-      setDescription(data.description);
-    }
-  }, [isloading]);
   // form submission handling function
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    try {
+      axios
+        .put(`${url}/${pid}`, {
+          name,
+          brand,
+          price,
+          description,
+          stock,
+          image,
+        })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      Saved();
+      setSuccess("Form Submitted Successfully");
+    } catch (err) {
+      console.log(err);
+    }
     console.log(name, brand, price, description, stock, image);
-
-    Saved();
-    setSuccess("Form Submitted Successfully");
   };
   return (
     <>
@@ -85,12 +102,11 @@ function UpdateProduct() {
             <Card>
               <Card.Header>
                 <Card.Title as="h4">Update Product</Card.Title>
+                {error && <span className="alert alert-danger">{error}</span>}
               </Card.Header>
               <Card.Body>
-                {isloading === true ? (
-                  <>
-                    <Loader />
-                  </>
+                {isloading ? (
+                  <Loader />
                 ) : (
                   <Form onSubmit={handleSubmit}>
                     <Row>
