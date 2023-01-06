@@ -42,11 +42,6 @@ function AddProduct() {
     const formData = new FormData();
     formData.append("file", image);
 
-    if (formData) {
-      const imagess = formData.get("image");
-      console.log(imagess);
-    }
-    
     axios
       .post(`${url}/new`, {
         name,
@@ -55,7 +50,7 @@ function AddProduct() {
         stock,
         image,
         description,
-      },)
+      })
       .then((res) => {
         console.log(res.data);
         Saved();
