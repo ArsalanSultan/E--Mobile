@@ -80,6 +80,7 @@ const dashboardRoutes = [
     showInSideBar: false,
     layout: "/admin",
   },
+
   {
     path: "/Payments",
     name: "Payments",

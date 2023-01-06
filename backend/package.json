@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "export NODE_ENV=DEVELOPMENT && nodemon backend/server.js",
+    
+    "dev": "nodemon backend/server.js",
     "prod": "export NODE_ENV=PRODUCTION && nodemon backend/server.js",
     "seeder": "node backend/utils/seeder.js"
   },
