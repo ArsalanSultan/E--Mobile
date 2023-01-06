@@ -1,5 +1,5 @@
 import React,{ Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import MetaData from '../Layouts/MetaData'
 
 import {useAlert} from 'react-alert'
@@ -8,7 +8,7 @@ import { addItemToCart, removeItemFromCart } from '../../actions/cartActions'
 
 const Cart = () => {
     const alert = useAlert()
-
+    const navigate=useNavigate()
     const dispatch = useDispatch();
 
     const { cartItems } = useSelector(state => state.cart)
@@ -32,6 +32,13 @@ const Cart = () => {
   dispatch(addItemToCart(id,newQty))
 
  }
+ 
+ const checkoutHandler=()=>{
+     // redirect to shipping page
+    navigate('/login?redirect=shipping')
+
+ }
+
 
 
   return (
@@ -45,8 +52,7 @@ const Cart = () => {
                 {cartItems.map(item =>(
                     <Fragment>
                         <hr />
-                        <div className="cart-item" key={item.product
-                        }>
+                        <div className="cart-item" key={item.product}>
                     <div className="row">
                         <div className="col-4 col-lg-3">
                             <img src={item.image} alt="Laptop" height="90" width="115" />
@@ -95,7 +101,7 @@ const Cart = () => {
                     <p>Est. total: <span className="order-summary-values">${cartItems.reduce((acc,item)=>acc+item.quantity*item.price ,0).toFixed(2)} </span></p>
     
                     <hr />
-                    <button id="checkout_btn" className="btn btn-primary btn-block">Check out</button>
+                    <button id="checkout_btn" className="btn btn-primary btn-block" onClick={checkoutHandler}>Check out</button>
                 </div>
             </div>
         </div>

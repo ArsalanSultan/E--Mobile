@@ -1,15 +1,15 @@
 import React,{Fragment,useState,useEffect} from 'react'
-import {Link,useNavigate} from 'react-router-dom'
+import {Link,useLocation,useNavigate} from 'react-router-dom'
 
 import Loader from '../Layouts/Loader'
 import MetaData from '../Layouts/MetaData'
 
 import {useDispatch, useSelector} from 'react-redux'
-import { login } from '../../actions/userActions'
+import { login ,clearError } from '../../actions/userActions'
 import { useAlert } from 'react-alert';
 
 const Login = () => {
-
+      const location= useLocation()
 
     const navigate = useNavigate();
 
@@ -19,18 +19,21 @@ const Login = () => {
     const alert =useAlert();
      const dispatch = useDispatch();
 
-         const {isAuthenticated,error,loading} = useSelector( state=>state.auth )
+         const {isAuthenticated,error,loading} = useSelector( state=>state.auth );
+         // redirect to shipping page
+         const redirect= location.search ? location.search.split('=')[1]:'/'
      useEffect(() => {
       if(error){
-           return alert.error(error)
+           return alert.error(error);
+           dispatch(clearError)
         }
       if(isAuthenticated) {
         alert.success('Logged In')
-        navigate('/')
+        navigate(redirect)
       }
 
 
-     }, [dispatch,alert,error,navigate,isAuthenticated])
+     }, [dispatch,alert,error,navigate,isAuthenticated,redirect])
      
      const submitHandler=(e)=>{
         e.preventDefault();
