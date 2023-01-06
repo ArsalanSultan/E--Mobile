@@ -7,7 +7,7 @@ import { Button, Card, Form, Container, Row, Col } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 
 // cloudinary import
-// import { CloudinaryContext, Image, Transformation } from "cloudinary-react";
+//import { CloudinaryContext, Image, Transformation } from "cloudinary-react";
 import Swal from "sweetalert2";
 
 function AddProduct() {
@@ -53,29 +53,6 @@ function AddProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-
-    console.log(name, brand, price, stock, image.name, description);
-
-    // handing image file
-    const formData = new FormData();
-    formData.append("file", image);
-
-    if (formData) {
-      const imagess = formData.get("image");
-      console.log(imagess);
-    }
-    
-    axios
-      .post(`${url}/new`, {
-        name,
-        brand,
-        price,
-        stock,
-        image,
-        description,
-      },)
-=======
     console.log(name, brand, price, stock, image, description);
     // getting token
     const token = localStorage.getItem("accessToken");
@@ -97,7 +74,6 @@ function AddProduct() {
           },
         }
       )
->>>>>>> 38a4cc75628c0f47b055e719b73da00a161f8b06
       .then((res) => {
         console.log(res.data);
         Saved();
@@ -231,4 +207,4 @@ function AddProduct() {
   );
 }
 
-export default AddProduct;
+export default AddProduct
