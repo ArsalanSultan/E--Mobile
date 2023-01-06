@@ -28,7 +28,7 @@ function Orders() {
                       <th className="border-0">Order Date</th>
                       <th className="border-0">Quantity</th>
                       <th className="border-0">Payment Method</th>
-                      <th className="border-0">Payment Status</th>
+                      <th className="border-0">Order Status</th>
                       <th className="border-0">Action</th>
                     </tr>
                   </thead>
