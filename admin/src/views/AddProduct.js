@@ -54,7 +54,6 @@ function AddProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-<<<<<<< HEAD
     console.log(name, brand, price, stock, image, description);
     // getting token
     const token = localStorage.getItem("accessToken");
@@ -76,7 +75,7 @@ function AddProduct() {
           },
         }
       )
-=======
+
 
     console.log(name, brand, price, stock, image.name, description);
 
@@ -93,7 +92,30 @@ function AddProduct() {
         image,
         description,
       })
->>>>>>> Changes to be done
+
+    console.log(name, brand, price, stock, image, description);
+    // setting token
+    const accesstoken = localStorage.getItem("accessToken");
+    console.log(image);
+    axios
+      .post(
+        `${url}/new`,
+        {
+          name,
+          brand,
+          price,
+          stock,
+          image,
+          seller: "EAhmed",
+          description,
+        },
+        {
+          headers: {
+            token: `Bearer ${accesstoken}`,
+          },
+        }
+      )
+
       .then((res) => {
         console.log(res.data);
         Saved();
