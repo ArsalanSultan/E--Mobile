@@ -34,6 +34,7 @@ router.delete(
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 router.get('/products', getProducts);
 router.get('/product/:id', getProductById);
 router.post('/admin/product/new', newProduct); // isLoggedIn,authorizeRoles('admin'),
@@ -44,5 +45,10 @@ router.post("/review", isLoggedIn, createProductReview);
 router.get("/review", isLoggedIn, getProductReviews);
 router.delete("/review", isLoggedIn, deleteReview);
 >>>>>>> 7a3d48a (Completed the add and delete product module)
+=======
+router.post("/review", isLoggedIn, createProductReview);
+router.get("/review", isLoggedIn, getProductReviews);
+router.delete("/review", isLoggedIn, deleteReview);
+>>>>>>> 38a4cc75628c0f47b055e719b73da00a161f8b06
 
 module.exports = router;

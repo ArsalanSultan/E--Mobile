@@ -92,14 +92,20 @@ function AllProducts() {
     const token = localStorage.getItem("accessToken");
     axios
 <<<<<<< HEAD
+<<<<<<< HEAD
       .delete(`http://localhost:5001/api/v1/admin/product/${id}`)
 =======
+=======
+>>>>>>> 38a4cc75628c0f47b055e719b73da00a161f8b06
       .delete(`${urlDelete}/${id}`, {
         headers: {
           token: `Bearer ${token}`,
         },
       })
+<<<<<<< HEAD
 >>>>>>> 7a3d48a (Completed the add and delete product module)
+=======
+>>>>>>> 38a4cc75628c0f47b055e719b73da00a161f8b06
       .then((res) => {
         Notification("Deleted", res.data.message, "success");
         setIsloading(true);
