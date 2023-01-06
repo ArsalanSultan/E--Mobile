@@ -54,6 +54,7 @@ function AddProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     console.log(name, brand, price, stock, image, description);
     // getting token
     const token = localStorage.getItem("accessToken");
@@ -75,6 +76,24 @@ function AddProduct() {
           },
         }
       )
+=======
+
+    console.log(name, brand, price, stock, image.name, description);
+
+    // handing image file
+    const formData = new FormData();
+    formData.append("file", image);
+
+    axios
+      .post(`${url}/new`, {
+        name,
+        brand,
+        price,
+        stock,
+        image,
+        description,
+      })
+>>>>>>> Changes to be done
       .then((res) => {
         console.log(res.data);
         Saved();

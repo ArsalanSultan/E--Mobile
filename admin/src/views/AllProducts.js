@@ -17,8 +17,13 @@ function AllProducts() {
   const [isloading, setIsloading] = useState(true);
   const history = useHistory();
   // api url
+<<<<<<< HEAD
   const url = "http://localhost:5001/api/v1";
   // const updateUrl = "http://localhost:5001/api/v1";
+=======
+  const url = "http://localhost:5001/api/v1/products";
+  const Updateurl = "http://localhost:5001/api/v1/admin/product";
+>>>>>>> Changes to be done
 
   // access token
   const token = localStorage.getItem("accessToken");
@@ -151,7 +156,7 @@ function AllProducts() {
                           <td>{da.description}</td>
                           <td>{da.stock}</td>
                           <td>
-                            <Link to={`product/update/${da._id}`}>
+                            <Link to={`${da._id}`}>
                               <button className="btn btn-primary mx-1 my-s-1">
                                 Edit
                               </button>
