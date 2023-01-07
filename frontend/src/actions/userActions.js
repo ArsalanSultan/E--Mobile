@@ -1,7 +1,6 @@
 import axios from "axios";
 import {
-<<<<<<< HEAD
-    LOGIN_REQUEST,
+  LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAIL,
     REGISTER_USER_REQUEST,
@@ -24,23 +23,8 @@ import {
     NEW_PASSWORD_FAIL,
     LOGOUT_SUCCESS,
     LOGOUT_FAIL,
-    CLEAR_ERRORS
-} from '../constants/userConstant'
-=======
-  LOGIN_REQUEST,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  REGISTER_USER_REQUEST,
-  REGISTER_USER_SUCCESS,
-  REGISTER_USER_FAIL,
-  LOAD_USER_REQUEST,
-  LOAD_USER_SUCCESS,
-  LOAD_USER_FAIL,
-  LOGOUT_SUCCESS,
-  LOGOUT_FAIL,
   CLEAR_ERRORS,
 } from "../constants/userConstant";
->>>>>>> 7a3d48a (Completed the add and delete product module)
 //login
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -106,40 +90,6 @@ export const register = (userData) => async (dispatch) => {
 };
 
 // load user
-<<<<<<< HEAD
-export const loadUser = ()=> async(dispatch)=>{
-    // console.log("Load user =", )
-   
-    try {
-         dispatch ({ type: LOAD_USER_REQUEST })
-         const token = localStorage.getItem('accessToken')
-        
-        // console.log(token)
-        const config ={
-            headers: {
-                'token': `Bearer ${token}`
-            }
-        }
-         
-        // console.log("config ===", config)
-        const { data } = await axios.get('/api/v1/me',config)
-        
-
-
-        dispatch ({ 
-            type: LOAD_USER_SUCCESS, 
-            payload: data.user
-        })
-    
-
-    } catch (error) {
-        dispatch({
-            type: LOAD_USER_FAIL,
-             payload: error.response.data.message
-            })
-    }
-}
-=======
 export const loadUser = () => async (dispatch) => {
   // console.log("Load user =", )
   try {
@@ -166,7 +116,6 @@ export const loadUser = () => async (dispatch) => {
     });
   }
 };
->>>>>>> 7a3d48a (Completed the add and delete product module)
 
 
 export const updateProfile = (userData)=> async(dispatch)=>{
@@ -288,27 +237,11 @@ export const resetPassword = (resetToken,passwords)=> async(dispatch)=>{
 
 
 //logout user
-<<<<<<< HEAD
-export const logout = ()=> async(dispatch)=>{
-  
-    try {
-        
-        localStorage.clear();
-    //localStorage.removeItem("accessToken")
-        window.location.reload();
-     
-        
-        dispatch ({ 
-            type: LOGOUT_SUCCESS, 
-             
-        })
-=======
 export const logout = () => async (dispatch) => {
   try {
     // localStorage.clear();
     localStorage.removeItem("accessToken");
     window.location.reload();
->>>>>>> 7a3d48a (Completed the add and delete product module)
 
     dispatch({
       type: LOGOUT_SUCCESS,
@@ -322,16 +255,8 @@ export const logout = () => async (dispatch) => {
 };
 
 // clear errors
-<<<<<<< HEAD
-export const clearError =()=> async (dispatch)=>{
-    dispatch({
-        type: CLEAR_ERRORS
-    })
-}
-=======
-export const clearErrors = async (dispatch) => {
+export const clearError = async (dispatch) => {
   dispatch({
     type: CLEAR_ERRORS,
   });
 };
->>>>>>> 7a3d48a (Completed the add and delete product module)
