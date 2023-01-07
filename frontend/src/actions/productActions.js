@@ -2,14 +2,20 @@ import {ALL_PRODUCT_REQUEST,ALL_PRODUCT_SUCCESS,ALL_PRODUCT_FAIL,PRODUCT_DETAIL_
     PRODUCT_DETAIL_SUCCESS,PRODUCT_DETAIL_FAIL,CLEAR_ERRORS} from '../constants/productConstant'
 import axios from 'axios';
                         //
-export const getProducts=(keyword='',currentPage = 1,price,brand)=>async(dispatch)=>{
+export const getProducts=(keyword='',currentPage = 1,brand)=>async(dispatch)=>{
     try {       
         dispatch({type: ALL_PRODUCT_REQUEST}) 
-              let link= `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}`
+              let link= `/api/v1/products?keyword=${keyword}&page=${currentPage}`
+            //   if(price){
+            //     link= `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}`
+            //   }
+
+            //&price[lte]=${price[1]}&price[gte]=${price[0]}
              if(brand){
-                link= `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}&brand=${brand}`
+                link= `/api/v1/products?keyword=${keyword}&page=${currentPage}&brand=${brand}`
              }  
         const { data }=await axios.get(link);
+       // console.log(data)
         dispatch({
             type: ALL_PRODUCT_SUCCESS,
             payload:data

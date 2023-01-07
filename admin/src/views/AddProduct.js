@@ -23,22 +23,23 @@ function AddProduct() {
   const url = "http://localhost:5001/api/v1/admin/product";
 
   // setting tokken
-  useEffect(() => {
-    axios
-      .get("http://localhost:5001/api/v1/me", {
-        headers: {
-          token:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOTlhZGQwNGQwNTQzMjcwZGE5ZjRmYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MjMwNTU5NiwiZXhwIjoxNjcyOTEwMzk2fQ.lGwRNLqADQiOE406PopLAU27PUWZWcgqwlyEeTVby-o",
-        },
-      })
-      .then((res) => {
-        const { accessToken } = res.data;
-        localStorage.setItem("accessToken", accessToken);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("accessToken");
+  //   axios
+  //     .get("http://localhost:5001/api/v1/me", {
+  //       headers: {
+  //         token:
+  //           `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       const { accessToken } = res.data;
+  //       localStorage.setItem("accessToken", accessToken);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   // toast notification
   const Saved = () => {
@@ -74,6 +75,47 @@ function AddProduct() {
           },
         }
       )
+
+
+    console.log(name, brand, price, stock, image.name, description);
+
+    // handing image file
+    const formData = new FormData();
+    formData.append("file", image);
+
+    axios
+      .post(`${url}/new`, {
+        name,
+        brand,
+        price,
+        stock,
+        image,
+        description,
+      })
+
+    console.log(name, brand, price, stock, image, description);
+    // setting token
+    const accesstoken = localStorage.getItem("accessToken");
+    console.log(image);
+    axios
+      .post(
+        `${url}/new`,
+        {
+          name,
+          brand,
+          price,
+          stock,
+          image,
+          seller: "EAhmed",
+          description,
+        },
+        {
+          headers: {
+            token: `Bearer ${accesstoken}`,
+          },
+        }
+      )
+
       .then((res) => {
         console.log(res.data);
         Saved();

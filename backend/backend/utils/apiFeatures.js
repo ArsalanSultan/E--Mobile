@@ -33,10 +33,15 @@ class APIFeatures{
 
     }
     pagination(resPerpage){
+
+        console.log(resPerpage)
+        
         //see on which page we are
         const currentPage = Number(this.queryStr.page) || 1;
         //skip records from DB
         const skip = resPerpage * (currentPage - 1)
+
+        
 
         this.query = this.query.limit(resPerpage).skip(skip)
         return this

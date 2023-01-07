@@ -17,8 +17,12 @@ function AllProducts() {
   const [isloading, setIsloading] = useState(true);
   const history = useHistory();
   // api url
-  const url = "http://localhost:5001/api/v1";
+  const url = "http://localhost:5001/api/v1/products";
+  const Updateurl = "http://localhost:5001/api/v1/admin/product";
+
+  //const url = "http://localhost:5001/api/v1";
   // const updateUrl = "http://localhost:5001/api/v1";
+
 
   // access token
   const token = localStorage.getItem("accessToken");
@@ -91,11 +95,14 @@ function AllProducts() {
 
     const token = localStorage.getItem("accessToken");
     axios
+      .delete(`http://localhost:5001/api/v1/admin/product/${id}`)
+
       .delete(`${urlDelete}/${id}`, {
         headers: {
           token: `Bearer ${token}`,
         },
       })
+
       .then((res) => {
         Notification("Deleted", res.data.message, "success");
         setIsloading(true);

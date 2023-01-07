@@ -51,7 +51,7 @@ function UpdateProduct() {
   }, []);
 
   // getting token
-  const token = localStorage.getItem("accessToken");
+  //const token = localStorage.getItem("accessToken");
 
   const SetFormData = () => {
     setName(data.product.name);

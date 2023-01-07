@@ -24,8 +24,8 @@ const Login = () => {
          const redirect= location.search ? location.search.split('=')[1]:'/'
      useEffect(() => {
       if(error){
-           return alert.error(error);
-           dispatch(clearError)
+           alert.error(error);
+           dispatch(clearError);
         }
       if(isAuthenticated) {
         alert.success('Logged In')

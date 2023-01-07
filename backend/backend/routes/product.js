@@ -33,6 +33,11 @@ router.delete(
   deleteProduct
 );
 
+
+router.post("/review", isLoggedIn, createProductReview);
+router.get("/review", isLoggedIn, getProductReviews);
+router.delete("/review", isLoggedIn, deleteReview);
+
 router.post("/review", isLoggedIn, createProductReview);
 router.get("/review", isLoggedIn, getProductReviews);
 router.delete("/review", isLoggedIn, deleteReview);
