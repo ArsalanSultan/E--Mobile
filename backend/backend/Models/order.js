@@ -23,11 +23,11 @@ const orderSchema = mongoose.Schema({
       required: true,
     },
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
+  // user: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   required: true,
+  //   ref: "User",
+  // },
   orderItems: [
     {
       name: {
@@ -46,11 +46,11 @@ const orderSchema = mongoose.Schema({
         type: Number,
         required: true,
       },
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "Product",
-      },
+      // product: {
+      //   type: mongoose.Schema.Types.ObjectId,
+      //   required: true,
+      //   ref: "Product",
+      // },
     },
   ],
   paymentInfo: {
