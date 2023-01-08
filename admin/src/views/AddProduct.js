@@ -77,7 +77,7 @@ function AddProduct() {
       )
 
 
-    console.log(name, brand, price, stock, image.name, description);
+    //console.log(name, brand, price, stock, image.name, description);
 
     // handing image file
     const formData = new FormData();
@@ -93,7 +93,7 @@ function AddProduct() {
         description,
       })
 
-    console.log(name, brand, price, stock, image, description);
+   // console.log(name, brand, price, stock, image, description);
     // setting token
     const accesstoken = localStorage.getItem("accessToken");
     console.log(image);

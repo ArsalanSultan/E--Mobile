@@ -14,11 +14,7 @@ const { authorizeRoles, isLoggedIn } = require("../middlewares/auth");
 
 router.get("/products", getProducts);
 router.get("/product/:id", getProductById);
-router.post(
-  "/admin/product/new",
-  isLoggedIn,
-  authorizeRoles("admin"),
-  newProduct
+router.post( "/admin/product/new", isLoggedIn, authorizeRoles("admin"), newProduct
 );
 router.put(
   "/admin/product/:id",
@@ -38,8 +34,5 @@ router.post("/review", isLoggedIn, createProductReview);
 router.get("/review", isLoggedIn, getProductReviews);
 router.delete("/review", isLoggedIn, deleteReview);
 
-router.post("/review", isLoggedIn, createProductReview);
-router.get("/review", isLoggedIn, getProductReviews);
-router.delete("/review", isLoggedIn, deleteReview);
 
 module.exports = router;

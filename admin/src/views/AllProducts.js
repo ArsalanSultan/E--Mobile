@@ -17,7 +17,7 @@ function AllProducts() {
   const [isloading, setIsloading] = useState(true);
   const history = useHistory();
   // api url
-  const url = "http://localhost:5001/api/v1/products";
+  const url = "http://localhost:5001/api/v1";
   const Updateurl = "http://localhost:5001/api/v1/admin/product";
 
   //const url = "http://localhost:5001/api/v1";
@@ -28,7 +28,27 @@ function AllProducts() {
   // url delete
   const urlDelete = "http://localhost:5001/api/v1/admin/product";
 
-  // getting all products
+
+  // // getting access token
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:5001/api/v1/me", {
+  //       headers: {
+  //         token:
+  //           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOTlhZGQwNGQwNTQzMjcwZGE5ZjRmYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MjMwNTU5NiwiZXhwIjoxNjcyOTEwMzk2fQ.lGwRNLqADQiOE406PopLAU27PUWZWcgqwlyEeTVby-o",
+  //       },
+  //     })
+  //     .then((res) => {
+  //       const { accessToken } = res.data;
+  //       localStorage.setItem("accessToken", accessToken);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
+  // useEffect to get all products
+
+
   useEffect(() => {
     axios
       .get("http://localhost:5001/api/v1/products")
@@ -77,7 +97,7 @@ function AllProducts() {
 
     const token = localStorage.getItem("accessToken");
     axios
-      .delete(`http://localhost:5001/api/v1/admin/product/${id}`)
+      // .delete(`http://localhost:5001/api/v1/admin/product/${id}`)
 
       .delete(`${urlDelete}/${id}`, {
         headers: {
@@ -88,8 +108,7 @@ function AllProducts() {
       .then((res) => {
         Notification("Deleted", res.data.message, "success");
         setIsloading(true);
-        const { accessToken } = res.data;
-        localStorage.setItem("accessToken", accessToken);
+        
       })
       .catch((err) => {
         console.log(err);

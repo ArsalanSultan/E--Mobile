@@ -33,22 +33,21 @@ function UpdateProduct() {
   const url = "http://localhost:5001/api/v1/admin/product";
 
   // setting tokken
-  useEffect(() => {
-    axios
-      .get("http://localhost:5001/api/v1/me", {
-        headers: {
-          token:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOTlhZGQwNGQwNTQzMjcwZGE5ZjRmYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MjMwNTU5NiwiZXhwIjoxNjcyOTEwMzk2fQ.lGwRNLqADQiOE406PopLAU27PUWZWcgqwlyEeTVby-o",
-        },
-      })
-      .then((res) => {
-        const { accessToken } = res.data;
-        localStorage.setItem("accessToken", accessToken);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:5001/api/v1/me", {
+  //       headers: {
+  //         token:
+  //       },
+  //     })
+  //     .then((res) => {
+  //       const { accessToken } = res.data;
+  //       localStorage.setItem("accessToken", accessToken);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   // getting token
   //const token = localStorage.getItem("accessToken");
