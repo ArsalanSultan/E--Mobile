@@ -19,6 +19,7 @@ import { loadUser } from "./actions/userActions";
 import store from "./store";
 import ProtectedRoutes from "./protectRoutes/UserProtectedRoute";
 import Orders from "./components/orders/Orders";
+import LoginWithGoogle from "./components/user/LoginWithGoogle";
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -54,6 +55,7 @@ function App() {
 
           {/* orders */}
           <Route path="/orders/me" element={<Orders />} />
+          <Route path="/google" element={<LoginWithGoogle />} />
         </Routes>
         <Footer />
       </>
