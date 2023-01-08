@@ -1,11 +1,41 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 // react-bootstrap components
 import { Card, Table, Container, Row, Col, Form } from "react-bootstrap";
 
+// import notification
+
+import { toast, ToastContainer } from "react-toastify";
 function Orders() {
   //const order status
   const [orderStatus, setOrderStatus] = useState("");
+  const [allOrders, setAllOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // get all orders
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    setIsLoading(true);
+    if (isLoading) {
+      toast.promise("Getting data");
+    }
+    axios
+      .get("http://localhost:5001/api/v1/admin/orders/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res;
+        setAllOrders(data.orders);
+        console.log("Orderss", allOrders);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   return (
     <>
       <Container fluid>
@@ -63,6 +93,7 @@ function Orders() {
             </Card>
           </Col>
         </Row>
+        <ToastContainer />
       </Container>
     </>
   );
