@@ -16,6 +16,10 @@ const registerUser = catchAsyncErrors(async (req, res, next) => {
   });
 
   const { name, email, password } = req.body;
+
+  const emailVerificationToken = crypto.randomBytes(20).toString("hex");
+  const emailVerificationTokenExpiry = Date.now() + 3600000; // 1 hour
+
   const user = await User.create({
     name,
     email,
@@ -24,10 +28,23 @@ const registerUser = catchAsyncErrors(async (req, res, next) => {
       public_id: result.public_id,
       url: result.secure_url,
     },
+    emailVerified: false,
+    emailVerificationToken,
+    emailVerificationTokenExpiry,
   });
 
+  const verificationUrl = `http://localhost:3000/verify-email?${emailVerificationToken}`;
+  const message = `Please click on the following link to verify your email address:\n\n${verificationUrl}\n\nIf you have not requested this email then ignore it.`;
+  try {
+    await sendEmail({ email, subject: "Email Verification", message });
+    res.send({ message: "Plase Verify your email" });
+  } catch (err) {
+    console.log(err);
+  }
   sendToken(user, 200, res);
 });
+
+// register user with google account => api/v1/register/google
 
 const registerUserWithGoogle = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -39,6 +56,7 @@ const registerUserWithGoogle = catchAsyncErrors(async (req, res, next) => {
 
   sendToken(user, 200, res);
 });
+
 //login user => api/v1/login
 const loginUser = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
@@ -65,6 +83,7 @@ const loginUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 //login user=>api/v1/admin/login
+
 const loginAdmin = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
   // check if user has entered email and password
@@ -104,6 +123,7 @@ const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   //create reset Password url
+
   //const resetUrl= `${req.protocol}://${req.get('host')}/api/v1/password/reset/${resetToken}`
   const resetUrl = `http://localhost:3000/password/reset/${resetToken}`;
   const message = `Your password reset token is as follows:\n\n${resetUrl}\n\nIf you have not requested this email then ignore it `;

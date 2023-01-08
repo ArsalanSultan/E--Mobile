@@ -23,35 +23,17 @@ function AllProducts() {
   //const url = "http://localhost:5001/api/v1";
   // const updateUrl = "http://localhost:5001/api/v1";
 
-
   // access token
-  const token = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("accessToken");
   // url delete
   const urlDelete = "http://localhost:5001/api/v1/admin/product";
 
-  // getting access token
+  // getting all products
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/v1/me", {
-        headers: {
-          token:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOTlhZGQwNGQwNTQzMjcwZGE5ZjRmYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MjMwNTU5NiwiZXhwIjoxNjcyOTEwMzk2fQ.lGwRNLqADQiOE406PopLAU27PUWZWcgqwlyEeTVby-o",
-        },
-      })
-      .then((res) => {
-        const { accessToken } = res.data;
-        localStorage.setItem("accessToken", accessToken);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-  // useEffect to get all products
-
-  useEffect(() => {
-    axios
-      .get(`${url}/products`)
+      .get("http://localhost:5001/api/v1/products")
       .then((data) => {
+        console.log(data);
         setData(data.data);
 
         setIsloading(false);

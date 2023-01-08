@@ -13,6 +13,12 @@ import { useAlert } from "react-alert";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import {
+  REGISTER_USER_REQUEST,
+  REGISTER_USER_FAIL,
+  REGISTER_USER_SUCCESS,
+} from "../../constants/userConstant";
+
 const LoginWithGoogle = () => {
   // google auth
   const [profile, setProfile] = useState([]);
@@ -50,6 +56,9 @@ const LoginWithGoogle = () => {
   //   gapi.load("client:auth2", initClient);
   // });
 
+  useEffect(() => {
+    console.log("UseEffect", name, email, password);
+  }, [name, email, password]);
   const onSuccess = async (res) => {
     const initClient = () => {
       gapi.client.init({
@@ -58,15 +67,66 @@ const LoginWithGoogle = () => {
       });
     };
     gapi.load("client:auth2", initClient);
-    console.log("success:", res);
+    console.log("success:", res.profileObj);
 
-    // setProfile(res.profileObj);
+    // dispatch(
+    //   register({
+    //     name,
+    //     email,
+    //     password,
+    //     avatar: {
+    //       public_id: "sef",
+    //       url: "sdf",
+    //     },
+    //   })
+    // );
+
+    // testing register section start
+
+    // register user
+
+    // const register = (name, email, password) => async (dispatch) => {
+    //   try {
+    //     dispatch({ type: REGISTER_USER_REQUEST });
+    //     const config = {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data",
+    //       },
+    //     };
+
+    //     const { data } = await axios.post(
+    //       "api/v1/register/google/",
+    //       { name, email, password },
+    //       config
+    //     );
+
+    //     const { accessToken } = data;
+    //     // console.log(accessToken)
+
+    //     localStorage.setItem("accessToken", accessToken);
+    //     //localStorage.setItem('user',JSON.stringify(user))
+
+    //     dispatch({
+    //       type: REGISTER_USER_SUCCESS,
+    //       payload: data, //.user
+    //     });
+    //   } catch (error) {
+    //     dispatch({
+    //       type: REGISTER_USER_FAIL,
+    //       payload: error.response.data.message,
+    //     });
+    //   }
+    // };
+    // dispatch(register(name, email, password));
+    // testing register section end
+
+    setProfile(res.profileObj);
     setName(res.profileObj.name);
     setEmail(res.profileObj.email);
     setPassword(res.profileObj.googleId);
     setAvatar(res.profileObj.imageUrl);
-    // console.log(profile);
-
+    console.log("Profile", profile);
+    console.log("Profile data", name, email, password, avatar);
     await axios
       .post("http://localhost:5001/api/v1/register/google", {
         name,
@@ -77,7 +137,7 @@ const LoginWithGoogle = () => {
         console.log(res);
         if (res.data.success) {
           alert.success("Logged In");
-          localStorage.setItem("aaccessToken", res.data.accessToken);
+          localStorage.setItem("accessToken", res.data.accessToken);
           navigate("/");
         }
       })
@@ -86,8 +146,6 @@ const LoginWithGoogle = () => {
         alert.error("Some error occured please sign up instead");
         // navigate("/register");
       });
-
-    console.log("Profile data", name, email, password, avatar);
   };
 
   const onFailure = (err) => {
