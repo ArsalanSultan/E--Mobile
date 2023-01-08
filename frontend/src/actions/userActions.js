@@ -92,9 +92,11 @@ export const register = (userData) => async (dispatch) => {
 // load user
 export const loadUser = () => async (dispatch) => {
   // console.log("Load user =", )
+
   try {
     dispatch({ type: LOAD_USER_REQUEST });
     const token = localStorage.getItem("accessToken");
+
     // console.log(token)
     const config = {
       headers: {
@@ -103,7 +105,7 @@ export const loadUser = () => async (dispatch) => {
     };
 
     // console.log("config ===", config)
-    const { data } = await axios.get("api/v1/me", config);
+    const { data } = await axios.get("/api/v1/me", config);
 
     dispatch({
       type: LOAD_USER_SUCCESS,
@@ -117,130 +119,122 @@ export const loadUser = () => async (dispatch) => {
   }
 };
 
+export const updateProfile = (userData) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    dispatch({ type: UPDATE_PROFILE_REQUEST });
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        token: `Bearer ${token}`,
+      },
+    };
 
-export const updateProfile = (userData)=> async(dispatch)=>{
-    try {
-        const token = localStorage.getItem('accessToken')
-        dispatch ({ type: UPDATE_PROFILE_REQUEST })
-        const config ={
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'token':`Bearer ${token}`
-            }
-        }
+    const { data } = await axios.put("/api/v1/me/update", userData, config);
 
-
-        const { data } = await axios.put('/api/v1/me/update',userData,config)
-
-      
-        dispatch ({ 
-            type: UPDATE_PROFILE_SUCCESS, 
-            payload: data.success
-        })
-
-    } catch (error) {
-        dispatch({
-            type: UPDATE_PROFILE_FAIL,
-             payload: error.response.data.message
-            })
-    }
-}
-
+    dispatch({
+      type: UPDATE_PROFILE_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    dispatch({
+      type: UPDATE_PROFILE_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 
 //update password
-export const updatePassword = (passwords)=> async(dispatch)=>{
-    try {
-        const token = localStorage.getItem('accessToken')
-        dispatch ({ type: UPDATE_PASSWORD_REQUEST })
-        const config ={
-            headers: {
-                'Content-Type': 'application/json',
-                'token':`Bearer ${token}`
-            }
-        }
+export const updatePassword = (passwords) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    dispatch({ type: UPDATE_PASSWORD_REQUEST });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        token: `Bearer ${token}`,
+      },
+    };
 
+    const { data } = await axios.put(
+      "/api/v1/password/update",
+      passwords,
+      config
+    );
 
-        const { data } = await axios.put('/api/v1/password/update',passwords,config)
-
-      
-        dispatch ({ 
-            type: UPDATE_PASSWORD_SUCCESS, 
-            payload: data.success
-        })
-
-    } catch (error) {
-        dispatch({
-            type: UPDATE_PASSWORD_FAIL,
-             payload: error.response.data.message
-            })
-    }
-}
+    dispatch({
+      type: UPDATE_PASSWORD_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    dispatch({
+      type: UPDATE_PASSWORD_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 
 //forgot Password
-export const forgotPassword = (email)=> async(dispatch)=>{
-    try {
-        const token = localStorage.getItem('accessToken')
-        dispatch ({ type: FORGOT_PASSWORD_REQUEST })
-        const config ={
-            headers: {
-                'Content-Type': 'application/json',
-                'token':`Bearer ${token}`
-            }
-        }
+export const forgotPassword = (email) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    dispatch({ type: FORGOT_PASSWORD_REQUEST });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        token: `Bearer ${token}`,
+      },
+    };
 
+    const { data } = await axios.post("/api/v1/password/forgot", email, config);
 
-        const { data } = await axios.post('/api/v1/password/forgot',email,config)
-
-      
-        dispatch ({ 
-            type: FORGOT_PASSWORD_SUCCESS, 
-            payload: data.message
-        })
-
-    } catch (error) {
-        dispatch({
-            type: FORGOT_PASSWORD_FAIL,
-             payload: error.response.data.message
-            })
-    }
-}
+    dispatch({
+      type: FORGOT_PASSWORD_SUCCESS,
+      payload: data.message,
+    });
+  } catch (error) {
+    dispatch({
+      type: FORGOT_PASSWORD_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 
 //reset password
-export const resetPassword = (resetToken,passwords)=> async(dispatch)=>{
-    try {
-        const accesstoken = localStorage.getItem('accessToken')
-        dispatch ({ type: NEW_PASSWORD_REQUEST })
-        const config ={
-            headers: {
-                'Content-Type': 'application/json',
-                'token':`Bearer ${accesstoken}`
-            }
-        }
+export const resetPassword = (resetToken, passwords) => async (dispatch) => {
+  try {
+    const accesstoken = localStorage.getItem("accessToken");
+    dispatch({ type: NEW_PASSWORD_REQUEST });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        token: `Bearer ${accesstoken}`,
+      },
+    };
 
+    const { data } = await axios.put(
+      `/api/v1/password/reset/${resetToken}`,
+      passwords,
+      config
+    );
 
-        const { data } = await axios.put(`/api/v1/password/reset/${resetToken}`,passwords,config)
-
-      
-        dispatch ({ 
-            type: NEW_PASSWORD_SUCCESS, 
-            payload: data.success
-        })
-
-    } catch (error) {
-        dispatch({
-            type: NEW_PASSWORD_FAIL,
-             payload: error.response.data.message
-            })
-    }
-}
-
-
+    dispatch({
+      type: NEW_PASSWORD_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    dispatch({
+      type: NEW_PASSWORD_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 
 //logout user
 export const logout = () => async (dispatch) => {
   try {
-    // localStorage.clear();
-    localStorage.removeItem("accessToken");
+    localStorage.clear();
+    //localStorage.removeItem("accessToken")
     window.location.reload();
 
     dispatch({
