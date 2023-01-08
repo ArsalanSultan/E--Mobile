@@ -1,15 +1,16 @@
 const Order = require("../Models/order");
 const Product = require("../Models/product");
-
+const User = require('../Models/user')
 const ErrorHandler = require("../utils/errorHandler");
 const { catchAsyncErrors } = require("../middlewares/catchAsyncError");
-
+const mongoose = require('mongoose')
 // create new order => api/v1/order/new
 
 const newOrder = catchAsyncErrors(async (req, res, next) => {
+  const user = req.user.id
   const {
     orderItems,
-    shippingInfo: { address, city, phoneNo, postalCode, country },
+    shippingInfo,
     itemsPrice,
     taxPrice,
     shippingPrice,
@@ -19,15 +20,43 @@ const newOrder = catchAsyncErrors(async (req, res, next) => {
 
   const order = await Order.create({
     orderItems,
-    shippingInfo: { address, city, phoneNo, postalCode, country },
+    shippingInfo,
     itemsPrice,
     taxPrice,
     shippingPrice,
     totalPrice,
     paymentInfo,
+    user,
     paidAt: Date.now(),
   });
-
+ // console.log(req.body.user);
+//   let result = await Order.aggregate([
+//     {
+//       $match: {
+//         user: mongoose.Types.ObjectId(req.body.user),
+//       },
+//     },
+//     {
+//       $lookup: {
+//         from: "users",
+//         localField: "user", // field in the Order collection
+//         foreignField: "_id", // field in the user collection
+//         as: "fromItems",
+//       },
+//     },
+//     {
+//       $unwind: { path: "$fromItems", preserveNullAndEmptyArrays: true },
+//     },
+//     {
+//       $project: {
+//         _id:0,
+//         Name: "$fromItems.name",
+//         email:"$fromItems.email"
+//       },
+//     },
+//   ]);
+//   console.log("result",result);
+// console.log(user)
   res.status(200).json({
     success: true,
     order,
@@ -53,7 +82,8 @@ const getSingleOrder = catchAsyncErrors(async (req, res, next) => {
 
 // Get logged in user orders   =>   /api/v1/orders/me
 const myOrders = catchAsyncErrors(async (req, res, next) => {
-  const orders = await Order.find({ user: req.user.id });
+  //const user = req.user.id
+  const orders = await Order.find({ user: req.user.id});
 
   res.status(200).json({
     success: true,

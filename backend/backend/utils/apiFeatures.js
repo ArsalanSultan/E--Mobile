@@ -34,7 +34,7 @@ class APIFeatures{
     }
     pagination(resPerpage){
 
-        console.log(resPerpage)
+       // console.log(resPerpage)
         
         //see on which page we are
         const currentPage = Number(this.queryStr.page) || 1;
