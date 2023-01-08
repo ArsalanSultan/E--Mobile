@@ -7,7 +7,10 @@ import MetaData from "../Layouts/MetaData";
 import { useDispatch, useSelector } from "react-redux";
 import { login, clearError } from "../../actions/userActions";
 import { useAlert } from "react-alert";
+import LoginWithGoogle from "./LoginWithGoogle";
 
+// react icons
+import { FaUserCheck } from "react-icons/fa";
 const Login = () => {
   const location = useLocation();
 
@@ -51,19 +54,6 @@ const Login = () => {
           <div className="row wrapper">
             <div className="col-10 col-lg-5">
               <form className="shadow-lg" onSubmit={submitHandler}>
-                <div className="text-center">
-                  <span className="display-5">Sign In with Google:</span>
-
-                  <span className="" style={{ cursor: "pointer" }}>
-                    <img
-                      src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
-                      className="img-fluid"
-                      style={{ width: "40px" }}
-                      alt="Google Icon"
-                    />
-                  </span>
-                  <hr className="w-75 border border" />
-                </div>
                 <h1 className="mb-3">Login</h1>
                 <div className="form-group">
                   <label for="email_field">Email</label>
@@ -99,9 +89,34 @@ const Login = () => {
                   LOGIN
                 </button>
 
-                <Link to="/register" className="float-right mt-3">
-                  New User?
-                </Link>
+                <div className="row mt-3">
+                  <div className="col-md-6 col-12 ">
+                    <span className="card shadow">
+                      <Link to="/register" className="text-center p-2 mt-1 ">
+                        <FaUserCheck className="mb-1 lead" />
+                        <span className="p-2">Sign Up</span>
+                      </Link>
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 col-12 mt-md-0 mt-2 ">
+                    <LoginWithGoogle />
+                  </div>
+
+                  {/* <div
+                    className="col-md-6 col-12 mt-md-0 mt-2 border shadow text-center p-2   mx-md-0"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => <LoginWithGoogle />}
+                  >
+                    <img
+                      src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
+                      alt="google icon"
+                      className="img-fluid"
+                      style={{ width: "35px" }}
+                    />
+                    <span>Sign In with google</span>
+                  </div> */}
+                </div>
               </form>
             </div>
           </div>
