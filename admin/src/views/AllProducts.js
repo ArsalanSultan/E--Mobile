@@ -23,11 +23,11 @@ function AllProducts() {
   //const url = "http://localhost:5001/api/v1";
   // const updateUrl = "http://localhost:5001/api/v1";
 
-
   // access token
-  const token = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("accessToken");
   // url delete
   const urlDelete = "http://localhost:5001/api/v1/admin/product";
+
 
   // // getting access token
   // useEffect(() => {
@@ -48,10 +48,12 @@ function AllProducts() {
   // }, []);
   // useEffect to get all products
 
+
   useEffect(() => {
     axios
-      .get(`${url}/products`)
+      .get("http://localhost:5001/api/v1/products")
       .then((data) => {
+        console.log(data);
         setData(data.data);
 
         setIsloading(false);

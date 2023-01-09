@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // email verification
+  emailVerified: Boolean,
+  emailVerificationToken: String,
+  emailVerificationTokenExpiry: Date,
+
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });

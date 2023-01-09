@@ -1,10 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import ChartistGraph from "react-chartist";
+
 // react-bootstrap components
+
 import { Card, Container, Row, Col } from "react-bootstrap";
+
 import Orders from "./Orders";
 
+// notification
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loader from "./sharedUI/Loader";
+
 function Dashboard() {
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [lowStock, setLowStock] = useState("");
+  const [isloading, setIsloading] = useState(true);
+
+  const accessToken = localStorage.getItem("accessToken");
+
+  // Orders status for chat
+
+  const remaingProducts = totalProducts.length - totalOrders.length;
+  console.log(remaingProducts);
+  useEffect(() => {
+    if (remaingProducts < 0) {
+      setLowStock("Out of stock");
+    }
+  }, [remaingProducts]);
+  // getting all products
+  useEffect(() => {
+    axios
+      .get("http://localhost:5001/api/v1/products")
+      .then((res) => {
+        setTotalProducts(res.data.products);
+      })
+      .catch((err) => {
+        toast.error("Facing an error try again while getting products data!");
+      });
+  }, []);
+
+  // get all orders
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5001/api/v1/admin/orders/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        setTotalOrders(res.data.orders);
+      })
+      .catch((err) => {
+        toast.error("Facing an error try again while getting orders data!");
+      });
+  }, []);
+
+  // get all customers /users
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5001/api/v1/admin/users", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setTotalCustomers(res.data.users);
+        setIsloading(false);
+      })
+      .catch((err) => {
+        toast.error("Facing an error try again while getting customer data!");
+      });
+  }, []);
   return (
     <>
       <Container fluid>
@@ -21,7 +94,9 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Total Customers</p>
-                      <Card.Title as="h4">150</Card.Title>
+                      <Card.Title as="h4">
+                        {totalCustomers ? totalCustomers.length : 0}
+                      </Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -47,7 +122,9 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Total Orders</p>
-                      <Card.Title as="h4">1,345</Card.Title>
+                      <Card.Title as="h4">
+                        {totalOrders ? totalOrders.length : 0}
+                      </Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -73,7 +150,9 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Total Products</p>
-                      <Card.Title as="h4">23</Card.Title>
+                      <Card.Title as="h4">
+                        {totalProducts ? totalProducts.length : 0}
+                      </Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -224,38 +303,45 @@ function Dashboard() {
             </Card>
           </Col>
           <Col md="6">
-            <Card>
-              <Card.Header>
-                <Card.Title as="h4">Stock Status </Card.Title>
-                <p className="card-category">
-                  Totatal Orders / Remaining Stock
-                </p>
-              </Card.Header>
-              <Card.Body>
-                <div
-                  className="ct-chart ct-perfect-fourth"
-                  id="chartPreferences"
-                >
-                  <ChartistGraph
-                    data={{
-                      labels: ["40%", "20%"],
-                      series: [40, 20],
-                    }}
-                    type="Pie"
-                  />
-                </div>
-                <div className="legend">
-                  <i className="fas fa-circle text-info"></i>
-                  Total Orders <i className="fas fa-circle text-danger"></i>
-                  Remaining Stock
-                </div>
-                {/* <hr></hr> */}
-                {/* <div className="stats">
-                  <i className="far fa-clock"></i>
-                  Campaign sent 2 days ago
-                </div> */}
-              </Card.Body>
-            </Card>
+            {isloading ? (
+              <Loader />
+            ) : (
+              <Card>
+                <Card.Header>
+                  <Card.Title as="h4">Stock Status </Card.Title>
+                  <p className="card-category">
+                    Totatal Orders / Remaining Stock
+                  </p>
+                  {lowStock && (
+                    <div className="alert alert-danger">{lowStock}</div>
+                  )}
+                </Card.Header>
+                <Card.Body>
+                  <div
+                    className="ct-chart ct-perfect-fourth"
+                    id="chartPreferences"
+                  >
+                    <ChartistGraph
+                      data={{
+                        labels: [totalOrders.length, remaingProducts],
+                        series: [totalOrders.length, remaingProducts],
+                      }}
+                      type="Pie"
+                    />
+                  </div>
+                  <div className="legend">
+                    <i className="fas fa-circle text-info"></i>
+                    Total Orders <i className="fas fa-circle text-danger"></i>
+                    Remaining Stock
+                  </div>
+                  {/* <hr></hr> */}
+                  {/* <div className="stats">
+                 <i className="far fa-clock"></i>
+                 Campaign sent 2 days ago
+               </div> */}
+                </Card.Body>
+              </Card>
+            )}
           </Col>
         </Row>
         <Row>
@@ -337,6 +423,7 @@ function Dashboard() {
             <Orders />
           </Col>
         </Row>
+        <ToastContainer autoClose={3000} theme="light" position="top-center" />
       </Container>
     </>
   );
