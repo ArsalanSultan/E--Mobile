@@ -11,7 +11,7 @@ export const addItemToCart=(id,quantity) => async (dispatch,getState)=>{
             product: data.product._id,
             name: data.product.name,
             price: data.product.price,
-            image: data.product.images[0].url,
+            image: data.product.images[0]?.url,
             stock: data.product.stock,
             quantity
         }
@@ -31,7 +31,7 @@ export const removeItemFromCart=(id) => async (dispatch,getState)=>{
 
 export const saveShippingInfo=(data) => async (dispatch,getState)=>{
     // const { data } = await axios.get(`/api/v1/product/${id}`)
- 
+          
      dispatch({
          type: SAVE_SHIPPING_INFO,
          payload: data 

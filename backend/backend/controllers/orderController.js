@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 // create new order => api/v1/order/new
 
 const newOrder = catchAsyncErrors(async (req, res, next) => {
+  //console.log(req.body, "data is here")
   const user = req.user.id
   const {
     orderItems,

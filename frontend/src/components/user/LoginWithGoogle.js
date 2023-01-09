@@ -77,7 +77,7 @@ const LoginWithGoogle = () => {
         console.log(res);
         if (res.data.success) {
           alert.success("Logged In");
-          localStorage.setItem("aaccessToken", res.data.accessToken);
+          localStorage.setItem("accessToken", res.data.accessToken);
           navigate("/");
         }
       })

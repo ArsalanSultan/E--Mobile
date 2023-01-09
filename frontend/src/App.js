@@ -19,7 +19,9 @@ import { loadUser } from "./actions/userActions";
 import store from "./store";
 import ProtectedRoutes from "./protectRoutes/UserProtectedRoute";
 import Orders from "./components/orders/Orders";
+import ConfirmOrder from "./components/cart/ConfirmOrder";
 import LoginWithGoogle from "./components/user/LoginWithGoogle";
+import Payment from "./components/cart/Payment";
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -51,10 +53,13 @@ function App() {
             <Route path="/me/update" element={<UpdateProfile />} exact />
             <Route path="/login/shipping" element={<Shipping />} exact />
             <Route path="/password/update" element={<UpdatePassword />} exact />
+            
           </Route>
 
           {/* orders */}
           <Route path="/orders/me" element={<Orders />} />
+          <Route path="/order/confirm" element={<ConfirmOrder />} exact />
+            <Route path="/payment" element={<Payment />} exact />
           <Route path="/google" element={<LoginWithGoogle />} />
         </Routes>
         <Footer />

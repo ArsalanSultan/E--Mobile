@@ -6,6 +6,7 @@ import MetaData from '../Layouts/MetaData'
 import { useDispatch,useSelector } from 'react-redux'
 import { saveShippingInfo } from '../../actions/cartActions'
 import { useNavigate } from 'react-router-dom'
+import CheckOutSteps from './CheckOutSteps'
 
 
 const Shipping = () => {
@@ -25,6 +26,7 @@ const Shipping = () => {
     const [postalCode,setPostalCode]=useState(shippingInfo.postalCode)
     const [phoneNo,setPhoneNo]=useState(shippingInfo.phoneNo)
     const [country,setCountry]= useState(shippingInfo.country)
+    console.log(country,"counntyry")
 
     const dispatch = useDispatch();
 
@@ -32,11 +34,14 @@ const Shipping = () => {
         e.preventDefault();
 
         dispatch(saveShippingInfo({address,city,postalCode,phoneNo,country}))
-        navigate('/confirm')
+        navigate('/order/confirm')
     }
   return (
     <Fragment>
         <MetaData title={'Shipping Info'} />
+
+          <CheckOutSteps shipping />
+
         <div className="row wrapper">
                 <div className="col-10 col-lg-5">
                     <form className="shadow-lg" onSubmit={submitHandler}>
@@ -95,6 +100,7 @@ const Shipping = () => {
                                 id="country_field"
                                 className="form-control"
                                 value={country}
+                            
                                 onChange={(e)=>setCountry(e.target.value)}
                                 required
                             >
