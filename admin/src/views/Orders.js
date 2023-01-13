@@ -30,13 +30,14 @@ function Orders() {
       .then((res) => {
         //const { data } = res;
         setAllOrders(res.data.orders);
-        console.log("Orderss", res.data.orders);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setIsLoading(false);
       });
   }, []);
-  console.log(allOrders,'alrierwoin')
+  // console.log(allOrders, "alrierwoin");
   return (
     <>
       <Container fluid>
@@ -50,12 +51,11 @@ function Orders() {
               <Card.Body className="table-full-width table-responsive px-0">
                 <Table className="table-hover table-striped">
                   <thead>
-                    
                     <tr>
                       <th className="border-0">Customer ID</th>
                       <th className="border-0">Customer Name</th>
                       <th className="border-0">Customer Address</th>
-                      <th className="border-0">Product ID</th>
+                      {/* <th className="border-0">Product ID</th> */}
                       <th className="border-0">Product Name</th>
                       <th className="border-0">Order Date</th>
                       <th className="border-0">Quantity</th>
@@ -65,32 +65,32 @@ function Orders() {
                     </tr>
                   </thead>
                   <tbody>
-                  {allOrders.map((item)=>(
-                    <tr key={item._id}>
-                      <td>{item.user?._id}</td>
-                      <td>{item.user?.name}</td>
-                      <td>{item.shippingInfo?.address}</td>
-                      <td>{item.orderItems[0]?._id}</td>
-                      <td>{item.orderItems[0]?.name}</td>
-                      <td>{String(item.createdAt).substring(0, 10)}</td>
-                      <td>{item.orderItems[0]?.quantity}</td>
-                      <td>COD</td>
-                      <td>{item.orderStatus}</td>
-                      <td>
-                        {" "}
-                        <Form.Select
-                          className="form-control"
-                          onChange={(e) => setOrderStatus(e.target.value)}
-                          defaultValue={orderStatus}
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Packing">Packing</option>
-                          <option value="On the way">On the way</option>
-                          <option value="Delivered">Delivered</option>
-                        </Form.Select>
-                      </td>
-                    </tr>
-                  ))}
+                    {allOrders.map((item) => (
+                      <tr key={item._id}>
+                        <td>{item.user?._id.slice(15, 20)}</td>
+                        <td>{item.user?.name}</td>
+                        <td>{item.shippingInfo?.address}</td>
+                        {/* <td>{item.orderItems[0]?._id.slice(15, 20)}</td> */}
+                        <td>{item.orderItems[0]?.name}</td>
+                        <td>{String(item.createdAt).substring(0, 10)}</td>
+                        <td>{item.orderItems[0]?.quantity}</td>
+                        <td>COD</td>
+                        <td>{item.orderStatus}</td>
+                        <td>
+                          {" "}
+                          <Form.Select
+                            className="form-control"
+                            onChange={(e) => setOrderStatus(e.target.value)}
+                            defaultValue={orderStatus}
+                          >
+                            <option value="Pending">Pending</option>
+                            <option value="Packing">Packing</option>
+                            <option value="On the way">On the way</option>
+                            <option value="Delivered">Delivered</option>
+                          </Form.Select>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
               </Card.Body>

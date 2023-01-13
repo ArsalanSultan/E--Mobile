@@ -16,6 +16,7 @@ import Loader from "./sharedUI/Loader";
 function Dashboard() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
+  const [totalOrdersQuantity, setTotalOrdersQuantity] = useState([]);
   const [totalCustomers, setTotalCustomers] = useState(0);
   const [revinue, setRevinue] = useState(0);
   const [lowStock, setLowStock] = useState("");
@@ -49,12 +50,14 @@ function Dashboard() {
         setTotalOrders(res.data.orders);
         setRevinue(res.data.totalAmount);
 
-        console.log(res);
+        // console.log("Orders", res.data.orders);
       })
       .catch((err) => {
         toast.error("Facing an error try again while getting orders data!");
       });
   }, []);
+
+  // getting total orders
 
   // get all customers /users
 
@@ -66,7 +69,7 @@ function Dashboard() {
         },
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setTotalCustomers(res.data.users);
         setIsloading(false);
       })
@@ -303,9 +306,7 @@ function Dashboard() {
               <Card>
                 <Card.Header>
                   <Card.Title as="h4">Stock Status </Card.Title>
-                  <p className="card-category">
-                    Totatal Orders / Remaining Stock
-                  </p>
+                  <p className="card-category">Total Orders / Stock</p>
                   {lowStock && (
                     <div className="alert alert-danger">{lowStock}</div>
                   )}
@@ -317,16 +318,23 @@ function Dashboard() {
                   >
                     <ChartistGraph
                       data={{
-                        labels: ["40%", "60%"],
-                        series: [40, 60],
+                        labels: [
+                          totalOrders ? totalOrders.length : 0,
+                          totalProducts ? totalProducts : 0,
+                        ],
+                        series: [
+                          totalOrders ? totalOrders.length : 0,
+                          ,
+                          totalProducts ? totalProducts : 0,
+                        ],
                       }}
                       type="Pie"
                     />
                   </div>
                   <div className="legend">
                     <i className="fas fa-circle text-info"></i>
-                    Total Orders <i className="fas fa-circle text-danger"></i>
-                    Remaining Stock
+                    Total Orders <i className="fas fa-circle text-warning"></i>
+                    Stock
                   </div>
                   {/* <hr></hr> */}
                   {/* <div className="stats">
