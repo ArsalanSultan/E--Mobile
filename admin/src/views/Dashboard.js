@@ -37,7 +37,7 @@ function Dashboard() {
       .get("http://localhost:5001/api/v1/products")
       .then((res) => {
         setTotalProducts(res.data.productsCount);
-       // console.log(res.data.productsCount)
+        // console.log(res.data.productsCount)
       })
       .catch((err) => {
         toast.error("Facing an error try again while getting products data!");
@@ -151,9 +151,7 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Total Products</p>
-                      <Card.Title as="h4">
-                        {totalProducts }
-                      </Card.Title>
+                      <Card.Title as="h4">{totalProducts}</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -324,8 +322,8 @@ function Dashboard() {
                   >
                     <ChartistGraph
                       data={{
-                        labels: [totalOrders.length, remaingProducts],
-                        series: [totalOrders.length, remaingProducts],
+                        labels: ["40%", "60%"],
+                        series: [40, 60],
                       }}
                       type="Pie"
                     />
