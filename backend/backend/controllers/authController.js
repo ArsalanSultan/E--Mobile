@@ -212,7 +212,7 @@ const updateProfile = catchAsyncErrors(async (req, res, next) => {
 
   // update avatar
   if (req.body.avatar !== "") {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.body.id);
     const image_id = user.avatar.public_id;
 
     const res = await cloudinary.v2.uploader.destroy(image_id);
@@ -229,15 +229,18 @@ const updateProfile = catchAsyncErrors(async (req, res, next) => {
     };
   }
 
-  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+  const user = await User.findByIdAndUpdate(req.body.id, newUserData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
 
-  res.status(200).json({
-    success: true,
-  });
+  res.status(200).json(
+    {
+      success: true,
+    },
+    user
+  );
 });
 
 // logout user => api/v1/logout

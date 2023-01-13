@@ -4,14 +4,32 @@ import React, { useEffect, useState } from "react";
 // react-bootstrap components
 import { Card, Table, Container, Row, Col, Form } from "react-bootstrap";
 
+// import pagination
+import Pagination from "react-paginate";
 // import notification
 
 import { toast, ToastContainer } from "react-toastify";
+import "./Order.css";
+import Loader from "./sharedUI/Loader";
 function Orders() {
   //const order status
   const [orderStatus, setOrderStatus] = useState("");
   const [allOrders, setAllOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const [perPage, setPerPage] = useState(10);
+
+  // handle page selection
+  const handlePageClick = (data) => {
+    const selected = data.selected;
+    setCurrentPage(selected);
+  };
+
+  const start = currentPage * perPage;
+  const end = start + perPage;
+  const currentData = allOrders.slice(start, end);
 
   // get all orders
 
@@ -65,36 +83,55 @@ function Orders() {
                     </tr>
                   </thead>
                   <tbody>
-                    {allOrders.map((item) => (
-                      <tr key={item._id}>
-                        <td>{item.user?._id.slice(15, 20)}</td>
-                        <td>{item.user?.name}</td>
-                        <td>{item.shippingInfo?.address}</td>
-                        {/* <td>{item.orderItems[0]?._id.slice(15, 20)}</td> */}
-                        <td>{item.orderItems[0]?.name}</td>
-                        <td>{String(item.createdAt).substring(0, 10)}</td>
-                        <td>{item.orderItems[0]?.quantity}</td>
-                        <td>COD</td>
-                        <td>{item.orderStatus}</td>
-                        <td>
-                          {" "}
-                          <Form.Select
-                            className="form-control"
-                            onChange={(e) => setOrderStatus(e.target.value)}
-                            defaultValue={orderStatus}
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="Packing">Packing</option>
-                            <option value="On the way">On the way</option>
-                            <option value="Delivered">Delivered</option>
-                          </Form.Select>
-                        </td>
-                      </tr>
-                    ))}
+                    {isLoading ? (
+                      <Loader />
+                    ) : (
+                      currentData.map((item) => (
+                        <tr key={item._id}>
+                          <td>{item.user?._id.slice(15, 20)}</td>
+                          <td>{item.user?.name}</td>
+                          <td>{item.shippingInfo?.address}</td>
+                          {/* <td>{item.orderItems[0]?._id.slice(15, 20)}</td> */}
+                          <td>{item.orderItems[0]?.name}</td>
+                          <td>{String(item.createdAt).substring(0, 10)}</td>
+                          <td>{item.orderItems[0]?.quantity}</td>
+                          <td>COD</td>
+                          <td>{item.orderStatus}</td>
+                          <td>
+                            {" "}
+                            <Form.Select
+                              className="form-control"
+                              onChange={(e) => setOrderStatus(e.target.value)}
+                              defaultValue={orderStatus}
+                            >
+                              <option value="Pending">Pending</option>
+                              <option value="Packing">Packing</option>
+                              <option value="On the way">On the way</option>
+                              <option value="Delivered">Delivered</option>
+                            </Form.Select>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </Table>
               </Card.Body>
             </Card>
+            <Col md="8" className="text-center mx-auto">
+              <Pagination
+                previousLabel={"<"}
+                nextLabel={">"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                pageCount={Math.ceil(allOrders.length / perPage)}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination "}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"}
+              />
+            </Col>
           </Col>
         </Row>
         <ToastContainer />

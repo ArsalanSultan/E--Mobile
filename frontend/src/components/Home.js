@@ -52,8 +52,8 @@ const Home = () => {
 
     // }
     //
-    dispatch(getProducts(keyword, currentPage,price, brand));
-  }, [dispatch, currentPage, price,keyword, brand]);
+    dispatch(getProducts(keyword, currentPage, price, brand));
+  }, [dispatch, currentPage, price, keyword, brand]);
 
   function setCurrentPageNo(pageNumber) {
     setCurrentPage(pageNumber);
@@ -117,36 +117,31 @@ const Home = () => {
             </div>
           </section>
 
-          {productsCount && <div className="d-flex justify-content-center mt-5">
-            
-            <Pagination
-              activePage={currentPage   }
-              // activePage={1}
-              itemsCountPerPage={4}
-              totalItemsCount={20}
-              pageRangeDisplayed={resPerPage}
-               itemClass="page-item"
-              linkClass="page-link"
-                            onChange={setCurrentPageNo}
+          {productsCount && (
+            <div className="d-flex justify-content-center mt-5">
+              <Pagination
+                activePage={currentPage}
+                // activePage={1}
+                itemsCountPerPage={4}
+                totalItemsCount={20}
+                pageRangeDisplayed={resPerPage}
+                itemClass="page-item"
+                linkClass="page-link"
+                onChange={setCurrentPageNo}
 
-              
-
-              
-
-
-              // itemsCountPerPage={resPerPage}
-              // pageRangeDisplayed={productsCount /resPerPage}
-              // totalItemsCount={productsCount}
-              // onChange={setCurrentPageNo}
-              // nextPageText={"Next"}
-              // prevPageText={"Previous"}
-              // firstPageText={"First"}
-              // lastPageText={"Last"}
-              // itemClass="page-item"
-              // linkClass="page-link"
-            />
-            
-          </div>}
+                // itemsCountPerPage={resPerPage}
+                // pageRangeDisplayed={productsCount /resPerPage}
+                // totalItemsCount={productsCount}
+                // onChange={setCurrentPageNo}
+                // nextPageText={"Next"}
+                // prevPageText={"Previous"}
+                // firstPageText={"First"}
+                // lastPageText={"Last"}
+                // itemClass="page-item"
+                // linkClass="page-link"
+              />
+            </div>
+          )}
         </Fragment>
       )}
     </div>
