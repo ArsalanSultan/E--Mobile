@@ -28,8 +28,9 @@ function User() {
   const [email, setEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState({});
   // console.log(user)
+  
 
   // banner side useState
   const [bannerTitle, setBannerTitle] = useState("");
@@ -72,8 +73,8 @@ function User() {
     console.log(id);
   };
 
-    useEffect(async() => {
-      try {
+    useEffect(() => {
+      
         
       
       const token = localStorage.getItem('accessToken')
@@ -87,13 +88,13 @@ function User() {
       }
 
       // console.log("config ===", config)
-      const response = await axios.get('http://localhost:5001/api/v1/me',config).then(()=>setUser(response.data))
-      
-      
+    axios.get('http://localhost:5001/api/v1/me',config)
+       //.then((res)=>console.log(res.data.user,'user'))
+      .then((res)=>setUser(res.data.user)) .catch((err) => {
+        console.log(err);
+      });
+      console.log(user,'data')
       }
-    } catch (error) {
-        console.log(error)
-    }
     }, [])
     
 
@@ -115,7 +116,7 @@ function User() {
                         <label>Admin Name</label>
                         <Form.Control
                           // defaultValue="Mike"
-                          placeholder="Mike"
+                          placeholder={user?.name}
                           type="text"
                           disabled
                         ></Form.Control>
@@ -126,7 +127,7 @@ function User() {
                         <label>Admin Email</label>
                         <Form.Control
                           // defaultValue="Andrew"
-                          placeholder="example@email.com"
+                          placeholder={user?.email}
                           type="email"
                           disabled
                         ></Form.Control>
@@ -187,11 +188,11 @@ function User() {
                     <img
                       alt="..."
                       className="avatar border-gray"
-                      src={require("assets/img/faces/face-3.jpg")}
+                      src={user.avatar?.url}
                     ></img>
-                    <h5 className="title">Admin Name</h5>
+                    <h5 className="title">{user?.name}</h5>
                   </a>
-                  <p className="description">Email</p>
+                  <p className="description">{user?.email}</p>
                 </div>
                 <p className="description text-center">
                   "Lamborghini Mercy <br></br>

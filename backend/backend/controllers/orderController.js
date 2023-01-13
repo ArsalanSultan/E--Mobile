@@ -94,7 +94,10 @@ const myOrders = catchAsyncErrors(async (req, res, next) => {
 
 // Get all orders - ADMIN  =>   /api/v1/admin/orders/
 const allOrders = catchAsyncErrors(async (req, res, next) => {
-  const orders = await Order.find();
+  const orders = await Order.find().populate(
+    "user",
+    "name email"
+  );;
 
   let totalAmount = 0;
 

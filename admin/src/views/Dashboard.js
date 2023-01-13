@@ -36,7 +36,8 @@ function Dashboard() {
     axios
       .get("http://localhost:5001/api/v1/products")
       .then((res) => {
-        setTotalProducts(res.data.products);
+        setTotalProducts(res.data.productsCount);
+       // console.log(res.data.productsCount)
       })
       .catch((err) => {
         toast.error("Facing an error try again while getting products data!");
@@ -151,7 +152,7 @@ function Dashboard() {
                     <div className="numbers">
                       <p className="card-category">Total Products</p>
                       <Card.Title as="h4">
-                        {totalProducts ? totalProducts.length : 0}
+                        {totalProducts }
                       </Card.Title>
                     </div>
                   </Col>

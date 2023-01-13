@@ -13,6 +13,7 @@
     "gapi-script": "^1.2.0",
     "google-auth-library": "^8.7.0",
     "hamburger-react": "^2.5.0",
+    "mdbreact": "^5.2.0",
     "rc-slider": "^10.1.0",
     "react": "^18.2.0",
     "react-alert": "^7.0.3",

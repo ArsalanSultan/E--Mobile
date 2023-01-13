@@ -28,14 +28,15 @@ function Orders() {
         },
       })
       .then((res) => {
-        const { data } = res;
-        setAllOrders(data.orders);
-        console.log("Orderss", allOrders);
+        //const { data } = res;
+        setAllOrders(res.data.orders);
+        console.log("Orderss", res.data.orders);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
+  console.log(allOrders,'alrierwoin')
   return (
     <>
       <Container fluid>
@@ -49,6 +50,7 @@ function Orders() {
               <Card.Body className="table-full-width table-responsive px-0">
                 <Table className="table-hover table-striped">
                   <thead>
+                    
                     <tr>
                       <th className="border-0">Customer ID</th>
                       <th className="border-0">Customer Name</th>
@@ -63,16 +65,17 @@ function Orders() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Ahmed</td>
-                      <td>Address Here</td>
-                      <td>P123</td>
-                      <td>Oppo F15 pro</td>
-                      <td>14-12-2022</td>
-                      <td>1</td>
+                  {allOrders.map((item)=>(
+                    <tr key={item._id}>
+                      <td>{item.user?._id}</td>
+                      <td>{item.user?.name}</td>
+                      <td>{item.shippingInfo?.address}</td>
+                      <td>{item.orderItems[0]?._id}</td>
+                      <td>{item.orderItems[0]?.name}</td>
+                      <td>{String(item.createdAt).substring(0, 10)}</td>
+                      <td>{item.orderItems[0]?.quantity}</td>
                       <td>COD</td>
-                      <td>{orderStatus}</td>
+                      <td>{item.orderStatus}</td>
                       <td>
                         {" "}
                         <Form.Select
@@ -87,6 +90,7 @@ function Orders() {
                         </Form.Select>
                       </td>
                     </tr>
+                  ))}
                   </tbody>
                 </Table>
               </Card.Body>
