@@ -17,27 +17,19 @@ function Dashboard() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [totalCustomers, setTotalCustomers] = useState(0);
+  const [revinue, setRevinue] = useState(0);
   const [lowStock, setLowStock] = useState("");
   const [isloading, setIsloading] = useState(true);
 
   const accessToken = localStorage.getItem("accessToken");
 
-  // Orders status for chat
-
-  const remaingProducts = totalProducts.length - totalOrders.length;
-  console.log(remaingProducts);
-  useEffect(() => {
-    if (remaingProducts < 0) {
-      setLowStock("Out of stock");
-    }
-  }, [remaingProducts]);
   // getting all products
   useEffect(() => {
     axios
       .get("http://localhost:5001/api/v1/products")
       .then((res) => {
         setTotalProducts(res.data.productsCount);
-        // console.log(res.data.productsCount)
+        // console.log(res.data.productsCount);
       })
       .catch((err) => {
         toast.error("Facing an error try again while getting products data!");
@@ -55,6 +47,9 @@ function Dashboard() {
       })
       .then((res) => {
         setTotalOrders(res.data.orders);
+        setRevinue(res.data.totalAmount);
+
+        console.log(res);
       })
       .catch((err) => {
         toast.error("Facing an error try again while getting orders data!");
@@ -177,7 +172,7 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Revenue</p>
-                      <Card.Title as="h4">4554 Rs</Card.Title>
+                      <Card.Title as="h4">{revinue.toFixed()} Rs</Card.Title>
                     </div>
                   </Col>
                 </Row>
