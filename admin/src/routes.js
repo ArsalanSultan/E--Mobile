@@ -121,14 +121,14 @@ const dashboardRoutes = [
   //   showInSideBar: true,
   //   layout: "/admin",
   // },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "nc-icon nc-atom",
-    component: Icons,
-    showInSideBar: true,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   icon: "nc-icon nc-atom",
+  //   component: Icons,
+  //   showInSideBar: true,
+  //   layout: "/admin",
+  // },
   // {
   //   path: "/notifications",
   //   name: "Notifications",

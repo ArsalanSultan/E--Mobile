@@ -32,26 +32,6 @@ function UpdateProduct() {
   // API url
   const url = "http://localhost:5001/api/v1/admin/product";
 
-  // setting tokken
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:5001/api/v1/me", {
-  //       headers: {
-  //         token:
-  //       },
-  //     })
-  //     .then((res) => {
-  //       const { accessToken } = res.data;
-  //       localStorage.setItem("accessToken", accessToken);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, []);
-
-  // getting token
-  //const token = localStorage.getItem("accessToken");
-
   const SetFormData = () => {
     setName(data.product.name);
     setBrand(data.product.brand);
@@ -74,7 +54,7 @@ function UpdateProduct() {
       })
       .catch((err) => {
         setError(
-          "Some Erorr occered while auto filling the form, Please fill the updates manually" ||
+          "Some Erorr occered while auto filling the form, Please fill the form by clicking here" ||
             err
         );
         setIsloading(false);

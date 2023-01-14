@@ -4,57 +4,51 @@ import React, { useEffect, useState } from "react";
 import { Card, Table, Container, Row, Col } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
+
 // confirmation alert import
 
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import Loader from "./sharedUI/Loader";
+
 // alert notification
 import Swal from "sweetalert2";
 
+// import pagination
+import Pagination from "react-paginate";
+
+// pagination css
+
+import "./AllProducts.css";
+
 function AllProducts() {
   const [data, setData] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [isloading, setIsloading] = useState(true);
   const history = useHistory();
-  // api url
-  const url = "http://localhost:5001/api/v1";
-  const Updateurl = "http://localhost:5001/api/v1/admin/product";
 
-  //const url = "http://localhost:5001/api/v1";
-  // const updateUrl = "http://localhost:5001/api/v1";
+  // pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const [perPage, setPerPage] = useState(10);
 
-  // access token
-  const accessToken = localStorage.getItem("accessToken");
-  // url delete
-  const urlDelete = "http://localhost:5001/api/v1/admin/product";
+  // handle page selection
+  const handlePageClick = (data) => {
+    const selected = data.selected;
+    setCurrentPage(selected);
+  };
 
+  const start = currentPage * perPage;
+  const end = start + perPage;
+  const currentData = allProducts.slice(start, end);
 
-  // // getting access token
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:5001/api/v1/me", {
-  //       headers: {
-  //         token:
-  //           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOTlhZGQwNGQwNTQzMjcwZGE5ZjRmYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MjMwNTU5NiwiZXhwIjoxNjcyOTEwMzk2fQ.lGwRNLqADQiOE406PopLAU27PUWZWcgqwlyEeTVby-o",
-  //       },
-  //     })
-  //     .then((res) => {
-  //       const { accessToken } = res.data;
-  //       localStorage.setItem("accessToken", accessToken);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, []);
-  // useEffect to get all products
-
-
+  // getting all products
   useEffect(() => {
     axios
       .get("http://localhost:5001/api/v1/products")
       .then((data) => {
-        console.log(data);
+        console.log(data.data.products);
         setData(data.data);
+        setAllProducts(data.data.products);
 
         setIsloading(false);
       })
@@ -97,9 +91,7 @@ function AllProducts() {
 
     const token = localStorage.getItem("accessToken");
     axios
-      // .delete(`http://localhost:5001/api/v1/admin/product/${id}`)
-
-      .delete(`${urlDelete}/${id}`, {
+      .delete(`http://localhost:5001/api/v1/admin/product/${id}`, {
         headers: {
           token: `Bearer ${token}`,
         },
@@ -108,7 +100,6 @@ function AllProducts() {
       .then((res) => {
         Notification("Deleted", res.data.message, "success");
         setIsloading(true);
-        
       })
       .catch((err) => {
         console.log(err);
@@ -144,12 +135,12 @@ function AllProducts() {
                   <tbody>
                     {isloading ? (
                       <Loader />
-                    ) : data.products.length == 0 ? (
+                    ) : allProducts.length == 0 ? (
                       <h2 className="alert alert-danger w-75 mx-auto">
                         No product To show Please Add one
                       </h2>
                     ) : (
-                      data.products.map((da) => (
+                      currentData.map((da) => (
                         <tr key={da._id}>
                           <td>{da._id}</td>
                           <td>{da.name}</td>
@@ -179,6 +170,21 @@ function AllProducts() {
                 </Table>
               </Card.Body>
             </Card>
+            <Col md="8" className="text-center mx-auto">
+              <Pagination
+                previousLabel={"<"}
+                nextLabel={">"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                pageCount={Math.ceil(allProducts.length / perPage)}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination "}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"}
+              />
+            </Col>
           </Col>
         </Row>
       </Container>

@@ -259,9 +259,11 @@ const updateProfile = async (req, res, next) => {
     email: req.body.email,
   };
 
+  console.log("User id", req.body.id);
+  console.log("User Data", newUserData);
   // update avatar
   if (req.body.avatar !== "") {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.body.id);
     const image_id = user.avatar.public_id;
 
     const res = await cloudinary.v2.uploader.destroy(image_id);
@@ -278,11 +280,20 @@ const updateProfile = async (req, res, next) => {
     };
   }
 
-  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+  const user = await User.findByIdAndUpdate(req.body.id, newUserData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
+
+
+  res.status(200).json(
+    {
+      success: true,
+    },
+    user
+  );
+});
 
   res.status(200).json({
     success: true,
@@ -292,6 +303,7 @@ const updateProfile = async (req, res, next) => {
     res.send(error)
 }
 };
+
 
 
 

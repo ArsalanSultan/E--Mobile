@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect, Children } from "react";
 import { useHistory } from "react-router";
-import axios from 'axios'
+import axios from "axios";
 // react-bootstrap components
 import {
   Button,
@@ -18,19 +18,19 @@ import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { cleanData } from "jquery";
 
-
 function User() {
   // useHistory
 
   const history = useHistory();
   // Admin profile useState
-  const [userName, setUserName] = useState("");
+  const [id, setId] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
   const [user, setUser] = useState({});
   // console.log(user)
-  
 
   // banner side useState
   const [bannerTitle, setBannerTitle] = useState("");
@@ -39,7 +39,43 @@ function User() {
   // handle Profile submission
   const handleProfileUpdate = (e) => {
     e.preventDefault();
-    console.log(oldPassword, newPassword);
+    console.log("User data", name, email);
+
+    const token = localStorage.getItem("accessToken");
+
+    if (token) {
+      console.log("user Token", token);
+      console.log("id", id, image);
+      const config = {
+        headers: {
+          token: `Bearer ${token}`,
+        },
+      };
+
+      axios
+        .put("http://localhost:5001/api/v1/me/update", config, {
+          id,
+          name,
+          email,
+          avatar: image,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  // handle product image uploading
+  const handleImageChange = (e) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
   };
 
   // handle banner submission
@@ -73,31 +109,32 @@ function User() {
     console.log(id);
   };
 
-    useEffect(() => {
-      
-        
-      
-      const token = localStorage.getItem('accessToken')
-      if(token){
-      
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
       // console.log(token)
-      const config ={
-          headers: {
-              'token': `Bearer ${token}`
-          }
-      }
+      const config = {
+        headers: {
+          token: `Bearer ${token}`,
+        },
+      };
 
       // console.log("config ===", config)
-    axios.get('http://localhost:5001/api/v1/me',config)
-       //.then((res)=>console.log(res.data.user,'user'))
-      .then((res)=>setUser(res.data.user)) .catch((err) => {
-        console.log(err);
-      });
-      console.log(user,'data')
-      }
-    }, [])
-    
-
+      axios
+        .get("http://localhost:5001/api/v1/me", config)
+        //.then((res)=>console.log(res.data.user,'user'))
+        .then((res) => {
+          setUser(res.data.user);
+          setName(res.data.user.name);
+          setEmail(res.data.user.email);
+          setId(res.data.user._id);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      console.log(user, "data");
+    }
+  }, []);
 
   return (
     <>
@@ -106,7 +143,7 @@ function User() {
           <Col md="8">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">User Profile</Card.Title>
+                <Card.Title as="h4">Profile</Card.Title>
               </Card.Header>
               <Card.Body>
                 <Form onSubmit={handleProfileUpdate}>
@@ -116,9 +153,10 @@ function User() {
                         <label>Admin Name</label>
                         <Form.Control
                           // defaultValue="Mike"
-                          placeholder={user?.name}
+                          placeholder="User Name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                           type="text"
-                          disabled
                         ></Form.Control>
                       </Form.Group>
                     </Col>
@@ -128,13 +166,21 @@ function User() {
                         <Form.Control
                           // defaultValue="Andrew"
                           placeholder={user?.email}
+                          value={email}
                           type="email"
-                          disabled
                         ></Form.Control>
                       </Form.Group>
                     </Col>{" "}
                   </Row>{" "}
-                  <Row>
+                  <Row className="p-3">
+                    <input
+                      type="file"
+                      name="avatar"
+                      className="form-control"
+                      onChange={handleImageChange}
+                    />
+                  </Row>
+                  {/* <Row>
                     <Col className="pr-1" md="6">
                       <Form.Group>
                         <label>Old Password</label>
@@ -161,9 +207,9 @@ function User() {
                         ></Form.Control>
                       </Form.Group>
                     </Col>{" "}
-                  </Row>
+                  </Row> */}
                   <Button
-                    className="btn-fill pull-right"
+                    className="btn-fill pull-right mt-2"
                     type="submit"
                     variant="primary"
                   >
