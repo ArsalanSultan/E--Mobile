@@ -48,6 +48,7 @@ function Orders() {
       .then((res) => {
         //const { data } = res;
         setAllOrders(res.data.orders);
+        console.log("all orders", res.data.orders);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -55,7 +56,42 @@ function Orders() {
         setIsLoading(false);
       });
   }, []);
-  // console.log(allOrders, "alrierwoin");
+
+  // Process update
+  useEffect(() => {
+    console.log(orderStatus);
+  }, [orderStatus]);
+
+  // updateProductStatus
+
+  const updateProductStatus = (id) => {
+    console.log("The product id", id, orderStatus);
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      console.log(token);
+      axios
+        .put(
+          `http://localhost:5001/api/v1/admin/order/${id}`,
+          {
+            Headers: {
+              token: `Bearer ${token}`,
+            },
+          },
+          {
+            id,
+            orderStatus,
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          toast.success("Order Status Updated!");
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Some error occured while updating order status");
+        });
+    }
+  };
   return (
     <>
       <Container fluid>
@@ -104,11 +140,17 @@ function Orders() {
                               onChange={(e) => setOrderStatus(e.target.value)}
                               defaultValue={orderStatus}
                             >
-                              <option value="Pending">Pending</option>
+                              <option value="Processing">Processing</option>
                               <option value="Packing">Packing</option>
                               <option value="On the way">On the way</option>
                               <option value="Delivered">Delivered</option>
                             </Form.Select>
+                            <button
+                              className="btn btn-danger"
+                              onClick={() => updateProductStatus(item._id)}
+                            >
+                              Update
+                            </button>
                           </td>
                         </tr>
                       ))

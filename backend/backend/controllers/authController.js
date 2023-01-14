@@ -210,6 +210,8 @@ const updateProfile = catchAsyncErrors(async (req, res, next) => {
     email: req.body.email,
   };
 
+  console.log("User id", req.body.id);
+  console.log("User Data", newUserData);
   // update avatar
   if (req.body.avatar !== "") {
     const user = await User.findById(req.body.id);

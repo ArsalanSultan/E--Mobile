@@ -28,7 +28,7 @@ function User() {
   const [email, setEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [image, setImage] = useState(null);
+
   const [user, setUser] = useState({});
   // console.log(user)
 
