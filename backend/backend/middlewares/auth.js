@@ -1,11 +1,12 @@
-const {catchAsyncErrors} = require('../middlewares/catchAsyncError');
+
 const User = require('../Models/user');
 const ErrorHandler = require('../utils/errorHandler');
 const jwt = require('jsonwebtoken')
 //checks if user is logged in or not
 
-const isLoggedIn = catchAsyncErrors(async (req,res,next)=>{
-
+const isLoggedIn = async (req,res,next)=>{
+    try {
+     
     const authHeader = req.headers.token;
     if(authHeader){
         const token = authHeader.split(" ")[1];
@@ -20,6 +21,10 @@ const isLoggedIn = catchAsyncErrors(async (req,res,next)=>{
         return res.status(401).json("You are not authenticated");
     }
 
+   
+} catch (error) {
+        res.send(error)
+}
 
 
     // const {token} = req.cookies
@@ -32,7 +37,7 @@ const isLoggedIn = catchAsyncErrors(async (req,res,next)=>{
     // req.user= await User.findById(decoded.id);
 
     // next()
-})
+}
  const authorizeRoles = (...roles)=>{
     return (req,res,next)=>{
         if(!roles.includes(req.user.role)){

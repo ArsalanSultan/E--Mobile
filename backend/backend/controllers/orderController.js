@@ -2,11 +2,15 @@ const Order = require("../Models/order");
 const Product = require("../Models/product");
 const User = require("../Models/user");
 const ErrorHandler = require("../utils/errorHandler");
+
 const { catchAsyncErrors } = require("../middlewares/catchAsyncError");
 const mongoose = require("mongoose");
+
 // create new order => api/v1/order/new
 
-const newOrder = catchAsyncErrors(async (req, res, next) => {
+const newOrder = async (req, res, next) => {
+  try {
+   
   //console.log(req.body, "data is here")
   const user = req.user.id;
   const {
@@ -62,10 +66,16 @@ const newOrder = catchAsyncErrors(async (req, res, next) => {
     success: true,
     order,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 // Get single order   =>   /api/v1/order/:id
-const getSingleOrder = catchAsyncErrors(async (req, res, next) => {
+const getSingleOrder = async (req, res, next) => {
+  try {
+   
   const order = await Order.findById(req.params.id).populate(
     "user",
     "name email"
@@ -78,23 +88,43 @@ const getSingleOrder = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     order,
-  });
-});
+  })
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 // Get logged in user orders   =>   /api/v1/orders/me
-const myOrders = catchAsyncErrors(async (req, res, next) => {
+const myOrders = async (req, res, next) => {
+  try {
+   
   //const user = req.user.id
   const orders = await Order.find({ user: req.user.id });
 
   res.status(200).json({
     success: true,
     orders,
-  });
-});
+  })
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 // Get all orders - ADMIN  =>   /api/v1/admin/orders/
+
 const allOrders = catchAsyncErrors(async (req, res, next) => {
   const orders = await Order.find().populate("user", "name email");
+
+const allOrders = async (req, res, next) => {
+  try {
+   
+  const orders = await Order.find().populate(
+    "user",
+    "name email"
+  );;
+
 
   let totalAmount = 0;
 
@@ -107,11 +137,21 @@ const allOrders = catchAsyncErrors(async (req, res, next) => {
     totalAmount,
     orders,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 // Update / Process order - ADMIN  =>   /api/v1/admin/order/:id
+
 const updateOrder = catchAsyncErrors(async (req, res, next) => {
   const { orderStatus } = req.body;
+
+const updateOrder = async (req, res, next) => {
+  try {
+   
+
   const order = await Order.findById(req.params.id);
   // const order = await Order.findById(id);
 
@@ -131,7 +171,11 @@ const updateOrder = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 async function updateStock(id, quantity) {
   const product = await Product.findById(id);
@@ -142,7 +186,9 @@ async function updateStock(id, quantity) {
 }
 
 // Delete order   =>   /api/v1/admin/order/:id
-const deleteOrder = catchAsyncErrors(async (req, res, next) => {
+const deleteOrder = async (req, res, next) => {
+  try {
+   
   const order = await Order.findById(req.params.id);
 
   if (!order) {
@@ -154,7 +200,11 @@ const deleteOrder = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 exports.newOrder = newOrder;
 exports.getSingleOrder = getSingleOrder;

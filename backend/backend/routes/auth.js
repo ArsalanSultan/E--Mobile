@@ -6,7 +6,6 @@ const {
   registerUserWithGoogle,
   loginUser,
   loginAdmin,
-  logout,
   forgotPassword,
   resetPassword,
   getActiveUser,
@@ -17,24 +16,29 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/authController");
-const { isLoggedIn, authorizeRoles } = require("../middlewares/auth");
+const { isLoggedIn } = require("../middlewares/auth");
 
 router.post("/register", registerUser);
 router.post("/register/google", registerUserWithGoogle);
 router.post("/login", loginUser);
-router.get("/logout", logout);
 router.post("/password/forgot", forgotPassword);
 router.put("/password/reset/:token", resetPassword);
 router.get("/me", isLoggedIn, getActiveUser);
 router.put("/password/update", isLoggedIn, changePassword);
+
 router.put("/me/update", updateProfile);
 router.get("/admin/users", isLoggedIn, authorizeRoles("admin"), allUsers);
 router.get("/admin/user/:id", isLoggedIn, authorizeRoles("admin"), userDetail);
 router.put("/admin/user/:id", isLoggedIn, authorizeRoles("admin"), updateUser);
+
+router.put("/me/update", isLoggedIn, updateProfile);
+router.get("/admin/users", isLoggedIn,  allUsers);
+router.get("/admin/user/:id", isLoggedIn,  userDetail);
+router.put("/admin/user/:id", isLoggedIn,  updateUser);
+
 router.delete(
   "/admin/user/:id",
   isLoggedIn,
-  authorizeRoles("admin"),
   deleteUser
 );
 router.post("/admin/login", loginAdmin);

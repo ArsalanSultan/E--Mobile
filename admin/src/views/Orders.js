@@ -4,8 +4,14 @@ import React, { useEffect, useState } from "react";
 // react-bootstrap components
 import { Card, Table, Container, Row, Col, Form } from "react-bootstrap";
 
+
 // import pagination
 import Pagination from "react-paginate";
+
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; 
+import Swal from "sweetalert2";
+
 // import notification
 
 import { toast, ToastContainer } from "react-toastify";
@@ -36,9 +42,9 @@ function Orders() {
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     setIsLoading(true);
-    if (isLoading) {
-      toast.promise("Getting data");
-    }
+    // if (isLoading) {
+    //   toast.promise("Getting data");
+    // }
     axios
       .get("http://localhost:5001/api/v1/admin/orders/", {
         headers: {
@@ -48,13 +54,67 @@ function Orders() {
       .then((res) => {
         //const { data } = res;
         setAllOrders(res.data.orders);
+
         console.log("all orders", res.data.orders);
         setIsLoading(false);
+=======
+        console.log("Orderss", res.data.orders);
+      }).then(()=>setIsLoading(false))
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [isLoading]);
+
+
+  const Notification = (title, text, icon) => {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      confirmButtonText: "OK",
+    });
+  };
+
+
+  
+  const handleDeleteAlert = (id) => {
+    confirmAlert({
+      title: "Delete",
+      message: "Are you sure to delete this user.",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => handleDelete(id),
+        },
+        {
+          label: "No",
+         onClick: () => history.goBack,
+        },
+      ],
+    });
+  };
+
+  const handleDelete = (id) => {
+    
+
+    const token = localStorage.getItem("accessToken");
+    axios.delete(`http://localhost:5001/api/v1/admin/order/${id}`, {
+        headers: {
+          token: `Bearer ${token}`,
+        },
+      })
+
+      .then((res) => {
+        Notification("Deleted", res.data.message, "success");
+        setIsLoading(true);
+        
+
       })
       .catch((err) => {
         console.log(err);
         setIsLoading(false);
       });
+
   }, []);
 
   // Process update
@@ -92,6 +152,10 @@ function Orders() {
         });
     }
   };
+
+  };
+
+
   return (
     <>
       <Container fluid>
@@ -116,9 +180,11 @@ function Orders() {
                       <th className="border-0">Payment Method</th>
                       <th className="border-0">Order Status</th>
                       <th className="border-0">Action</th>
+                      <th className="border-0">Delete</th>
                     </tr>
                   </thead>
                   <tbody>
+
                     {isLoading ? (
                       <Loader />
                     ) : (
@@ -155,6 +221,37 @@ function Orders() {
                         </tr>
                       ))
                     )}
+
+                  {allOrders.map((item)=>(
+                    <tr key={item._id}>
+                      <td>{item.user?._id}</td>
+                      <td>{item.user?.name}</td>
+                      <td>{item.shippingInfo?.address}</td>
+                      <td>{item.orderItems[0]?._id}</td>
+                      <td>{item.orderItems[0]?.name}</td>
+                      <td>{String(item.createdAt).substring(0, 10)}</td>
+                      <td>{item.orderItems[0]?.quantity}</td>
+                      <td>COD</td>
+                      <td>{item.orderStatus}</td>
+                      <td>
+                        {" "}
+                        <Form.Select
+                          className="form-control"
+                          onChange={(e) => setOrderStatus(e.target.value)}
+                          defaultValue={orderStatus}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Packing">Packing</option>
+                          <option value="On the way">On the way</option>
+                          <option value="Delivered">Delivered</option>
+                        </Form.Select>
+                      </td>
+                      <button type="button" class="btn btn-default btn-sm" onClick={() => handleDeleteAlert(item._id)}>
+          <span class="glyphicon glyphicon-trash"></span> Delete 
+        </button>
+                    </tr>
+                  ))}
+
                   </tbody>
                 </Table>
               </Card.Body>

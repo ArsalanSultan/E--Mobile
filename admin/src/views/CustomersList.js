@@ -3,11 +3,15 @@ import axios from 'axios'
 
 // react-bootstrap components
 import { Card, Table, Container, Row, Col, Form } from "react-bootstrap";
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; 
+import Swal from "sweetalert2";
 
 
 function CustomersList() {
   const [user, setUser] = useState([])
 
+  const [isloading, setIsloading] = useState(true);
 
   const token = localStorage.getItem('accessToken');
 
@@ -18,11 +22,59 @@ function CustomersList() {
   };
    useEffect(() => {
      
-    axios.get('http://localhost:5001/api/v1/admin/users',config).then((res)=>setUser(res.data.users))
+    axios.get('http://localhost:5001/api/v1/admin/users',config).then((res)=>setUser(res.data.users)).then(()=> setIsloading(false))
      
-   }, [])
+   }, [isloading])
+
+   const Notification = (title, text, icon) => {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      confirmButtonText: "OK",
+    });
+  };
    
-   
+   const handleDeleteAlert = (id) => {
+    confirmAlert({
+      title: "Delete",
+      message: "Are you sure to delete this user.",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => handleDelete(id),
+        },
+        {
+          label: "No",
+         onClick: () => history.goBack,
+        },
+      ],
+    });
+  };
+
+
+  const handleDelete = (id) => {
+    console.log(id);
+
+    const token = localStorage.getItem("accessToken");
+    axios
+      // .delete(`http://localhost:5001/api/v1/admin/product/${id}`)
+
+      .delete(`http://localhost:5001/api/v1/admin/user/${id}`, {
+        headers: {
+          token: `Bearer ${token}`,
+        },
+      })
+
+      .then((res) => {
+        Notification("Deleted", res.data.message, "success");
+        setIsloading(true);
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
    //.then((res)=>console.log(res.data.users,'data'))
 
@@ -46,6 +98,7 @@ function CustomersList() {
                       <th className="border-0">Customer Name</th>
                       <th className="border-0">Sign up date</th>
                       <th className="border-0">Role</th>
+                      <th className="border-0">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -55,6 +108,13 @@ function CustomersList() {
                       <td>{item.name}</td>
                       <td>{String(item.createdAt).substring(0, 10)}</td>
                       <td>{item.role}</td>
+                      {/* <button type="button" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-pencil"></span> Edit 
+        </button> */}
+         <button type="button" class="btn btn-default btn-sm" onClick={() => handleDeleteAlert(item._id)}>
+          <span class="glyphicon glyphicon-trash"></span> Delete 
+        </button>
+
                     </tr>
                     ))}
                   </tbody>

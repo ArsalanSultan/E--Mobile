@@ -1,14 +1,15 @@
 const User = require("../Models/user");
 
 const ErrorHandler = require("../utils/errorHandler");
-const { catchAsyncErrors } = require("../middlewares/catchAsyncError");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary");
 
 // register user
-const registerUser = catchAsyncErrors(async (req, res, next) => {
+const registerUser = async (req, res, next) => {
+  try {
+  
   const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
     folder: "avatars",
     width: 150,
@@ -42,11 +43,17 @@ const registerUser = catchAsyncErrors(async (req, res, next) => {
     console.log(err);
   }
   sendToken(user, 200, res);
-});
+    
+} catch (error) {
+    res.send(error);
+}
+}
 
 // register user with google account => api/v1/register/google
 
-const registerUserWithGoogle = catchAsyncErrors(async (req, res, next) => {
+const registerUserWithGoogle = async (req, res, next) => {
+  try {
+  
   const { name, email, password } = req.body;
   const user = await User.create({
     name,
@@ -55,10 +62,16 @@ const registerUserWithGoogle = catchAsyncErrors(async (req, res, next) => {
   });
 
   sendToken(user, 200, res);
-});
+    
+} catch (error) {
+    res.send(error)
+}
+};
 
 //login user => api/v1/login
-const loginUser = catchAsyncErrors(async (req, res, next) => {
+const loginUser = async (req, res, next) => {
+  try {
+   
   const { email, password } = req.body;
   // check if user has entered email and password
   if (!email || !password) {
@@ -80,11 +93,17 @@ const loginUser = catchAsyncErrors(async (req, res, next) => {
     //  res.status(200).json(info);
     sendToken(user, 200, res);
   }
-});
+   
+} catch (error) {
+    res.send(error)
+}
+};
 
 //login user=>api/v1/admin/login
 
-const loginAdmin = catchAsyncErrors(async (req, res, next) => {
+const loginAdmin = async (req, res, next) => {
+  try {
+   
   const { email, password } = req.body;
   // check if user has entered email and password
   if (!email || !password) {
@@ -110,10 +129,16 @@ const loginAdmin = catchAsyncErrors(async (req, res, next) => {
     // assign token to user
     sendToken(user, 200, res);
   }
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 // forgot password => api/v1/password/forgot
-const forgotPassword = catchAsyncErrors(async (req, res, next) => {
+const forgotPassword = async (req, res, next) => {
+  try {
+   
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     return next(new ErrorHandler("user not found", 404));
@@ -144,10 +169,16 @@ const forgotPassword = catchAsyncErrors(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
     return next(new ErrorHandler(error.message, 500));
   }
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 // reset Password => api/v1/password/reset/:token
-const resetPassword = catchAsyncErrors(async (req, res, next) => {
+const resetPassword = async (req, res, next) => {
+  try {
+   
   //Hash URL token
   const resetPasswordToken = crypto
     .createHash("sha256")
@@ -176,18 +207,30 @@ const resetPassword = catchAsyncErrors(async (req, res, next) => {
   await user.save();
 
   sendToken(user, 200, res);
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 // get currenttly logged in user => api/v1/me
-const getActiveUser = catchAsyncErrors(async (req, res, next) => {
+const getActiveUser = async (req, res, next) => {
+  try {
+   
   // console.log("req === ",req.user)
   const user = await User.findById(req.user.id);
 
   sendToken(user, 200, res);
-});
+   
+} catch (error) {
+    res.send(error)
+}
+};
 
 //change user password => /api/v1/password/update
-const changePassword = catchAsyncErrors(async (req, res, next) => {
+const changePassword = async (req, res, next) => {
+  try {
+   
   const user = await User.findById(req.user.id).select("+password");
   // check previous user  password
   const isMatched = await user.comparePassword(req.body.oldPassword);
@@ -200,11 +243,17 @@ const changePassword = catchAsyncErrors(async (req, res, next) => {
 
     sendToken(user, 200, res);
   }
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 //update user profile => /api/v1/me/update
 
-const updateProfile = catchAsyncErrors(async (req, res, next) => {
+const updateProfile = async (req, res, next) => {
+  try {
+  
   const newUserData = {
     name: req.body.name,
     email: req.body.email,
@@ -237,6 +286,7 @@ const updateProfile = catchAsyncErrors(async (req, res, next) => {
     useFindAndModify: false,
   });
 
+
   res.status(200).json(
     {
       success: true,
@@ -245,32 +295,41 @@ const updateProfile = catchAsyncErrors(async (req, res, next) => {
   );
 });
 
-// logout user => api/v1/logout
-const logout = catchAsyncErrors(async (req, res, next) => {
-  if (req.session) {
-    req.session.destroy();
-  }
   res.status(200).json({
-    sucess: true,
-    message: "logged out",
+    success: true,
   });
-});
+    
+} catch (error) {
+    res.send(error)
+}
+};
+
+
+
 
 //admin routes
 
 //get all users => /api/v1/admin/users
 
-const allUsers = catchAsyncErrors(async (req, res, next) => {
+const allUsers = async (req, res, next) => {
+  try {
+   
   const users = await User.find();
 
   res.status(200).json({
     success: true,
     users,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 //get eny user with id => /api/v1/admin/user/ id
 
-const userDetail = catchAsyncErrors(async (req, res, next) => {
+const userDetail = async (req, res, next) => {
+  try {
+   
   const user = await User.findById(req.params.id);
 
   if (!user) {
@@ -280,10 +339,16 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
     success: true,
     user,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 //update userinfo => api/v1/admin/user/:id
-const updateUser = catchAsyncErrors(async (req, res, next) => {
+const updateUser = async (req, res, next) => {
+  try {
+    
   const newUserData = {
     name: req.body.name,
     email: req.body.email,
@@ -299,11 +364,17 @@ const updateUser = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
   });
-});
+
+} catch (error) {
+    res.send(error)
+}
+}
 
 //deleteuser with id => /api/v1/admin/user/id
 
-const deleteUser = catchAsyncErrors(async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
+  try {
+   
   const user = await User.findById(req.params.id);
 
   if (!user) {
@@ -315,12 +386,15 @@ const deleteUser = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 exports.registerUser = registerUser;
 exports.registerUserWithGoogle = registerUserWithGoogle;
 exports.loginUser = loginUser;
-exports.logout = logout;
 exports.forgotPassword = forgotPassword;
 exports.resetPassword = resetPassword;
 exports.getActiveUser = getActiveUser;
