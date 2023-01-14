@@ -4,12 +4,11 @@ import React, { useEffect, useState } from "react";
 // react-bootstrap components
 import { Card, Table, Container, Row, Col, Form } from "react-bootstrap";
 
-
 // import pagination
 import Pagination from "react-paginate";
 
 import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; 
+import "react-confirm-alert/src/react-confirm-alert.css";
 import Swal from "sweetalert2";
 
 // import notification
@@ -57,12 +56,12 @@ function Orders() {
         console.log("all orders", res.data.orders);
         setIsLoading(false);
         console.log("Orderss", res.data.orders);
-      }).then(()=>setIsLoading(false))
+      })
+      .then(() => setIsLoading(false))
       .catch((err) => {
         console.log(err);
       });
-  }, [isLoading]);
-
+  }, []);
 
   const Notification = (title, text, icon) => {
     Swal.fire({
@@ -73,8 +72,6 @@ function Orders() {
     });
   };
 
-
-  
   const handleDeleteAlert = (id) => {
     confirmAlert({
       title: "Delete",
@@ -86,17 +83,16 @@ function Orders() {
         },
         {
           label: "No",
-         onClick: () => history.goBack,
+          onClick: () => history.goBack,
         },
       ],
     });
   };
 
   const handleDelete = (id) => {
-    
-
     const token = localStorage.getItem("accessToken");
-    axios.delete(`http://localhost:5001/api/v1/admin/order/${id}`, {
+    axios
+      .delete(`http://localhost:5001/api/v1/admin/order/${id}`, {
         headers: {
           token: `Bearer ${token}`,
         },
@@ -105,56 +101,50 @@ function Orders() {
       .then((res) => {
         Notification("Deleted", res.data.message, "success");
         setIsLoading(true);
-        
-
       })
       .catch((err) => {
         console.log(err);
         setIsLoading(false);
       });
 
-     
+    // Process update
+    useEffect(() => {
+      console.log(orderStatus);
+    }, [orderStatus]);
 
-  // Process update
-  useEffect(() => {
-    console.log(orderStatus);
-  }, [orderStatus]);
+    // updateProductStatus
 
-  // updateProductStatus
-
-  const updateProductStatus = (id) => {
-    console.log("The product id", id, orderStatus);
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      console.log(token);
-      axios
-        .put(
-          `http://localhost:5001/api/v1/admin/order/${id}`,
-          {
-            Headers: {
-              token: `Bearer ${token}`,
+    const updateProductStatus = (id) => {
+      console.log("The product id", id, orderStatus);
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        console.log(token);
+        axios
+          .put(
+            `http://localhost:5001/api/v1/admin/order/${id}`,
+            {
+              Headers: {
+                token: `Bearer ${token}`,
+              },
             },
-          },
-          {
-            id,
-            orderStatus,
-          }
-        )
-        .then((res) => {
-          console.log(res);
-          toast.success("Order Status Updated!");
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Some error occured while updating order status");
-          setIsLoading(false);
-        });
-    }
+            {
+              id,
+              orderStatus,
+            }
+          )
+          .then((res) => {
+            console.log(res);
+            toast.success("Order Status Updated!");
+            setIsLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("Some error occured while updating order status");
+            setIsLoading(false);
+          });
+      }
+    };
   };
-
-  };
-
 
   return (
     <>
@@ -180,11 +170,11 @@ function Orders() {
                       <th className="border-0">Payment Method</th>
                       <th className="border-0">Order Status</th>
                       <th className="border-0">Action</th>
-                      <th className="border-0">Delete</th>
+                      <th className="border-0">Action</th>
+                      {/* <th className="border-0">Delete</th> */}
                     </tr>
                   </thead>
                   <tbody>
-
                     {isLoading ? (
                       <Loader />
                     ) : (
@@ -211,47 +201,27 @@ function Orders() {
                               <option value="On the way">On the way</option>
                               <option value="Delivered">Delivered</option>
                             </Form.Select>
+                          </td>
+                          <td>
                             <button
-                              className="btn btn-danger"
+                              type="button"
+                              class="btn btn-default btn-sm"
                               onClick={() => updateProductStatus(item._id)}
                             >
                               Update
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-default btn-sm"
+                              onClick={() => handleDeleteAlert(item._id)}
+                            >
+                              <span class="glyphicon glyphicon-trash"></span>{" "}
+                              Delete
                             </button>
                           </td>
                         </tr>
                       ))
                     )}
-
-                  {allOrders.map((item)=>(
-                    <tr key={item._id}>
-                      <td>{item.user?._id}</td>
-                      <td>{item.user?.name}</td>
-                      <td>{item.shippingInfo?.address}</td>
-                      <td>{item.orderItems[0]?._id}</td>
-                      <td>{item.orderItems[0]?.name}</td>
-                      <td>{String(item.createdAt).substring(0, 10)}</td>
-                      <td>{item.orderItems[0]?.quantity}</td>
-                      <td>COD</td>
-                      <td>{item.orderStatus}</td>
-                      <td>
-                        {" "}
-                        <Form.Select
-                          className="form-control"
-                          onChange={(e) => setOrderStatus(e.target.value)}
-                          defaultValue={orderStatus}
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Packing">Packing</option>
-                          <option value="On the way">On the way</option>
-                          <option value="Delivered">Delivered</option>
-                        </Form.Select>
-                      </td>
-                      <button type="button" class="btn btn-default btn-sm" onClick={() => handleDeleteAlert(item._id)}>
-          <span class="glyphicon glyphicon-trash"></span> Delete 
-        </button>
-                    </tr>
-                  ))}
-
                   </tbody>
                 </Table>
               </Card.Body>
