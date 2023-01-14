@@ -123,8 +123,8 @@ function Orders() {
   const updateProductStatus = (id) => {
     console.log("The product id", id, orderStatus);
     const token = localStorage.getItem("accessToken");
-    if (token) {
-      console.log(token);
+    if (token && id) {
+      console.log("token and id is here", token, id);
       axios
         .put(
           `http://localhost:5001/api/v1/admin/order/${id}`,
@@ -140,7 +140,7 @@ function Orders() {
         )
         .then((res) => {
           console.log(res);
-          toast.success("Order Status Updated!");
+          // toast.success("Order Status Updated!");
           setIsLoading(false);
         })
         .catch((err) => {
