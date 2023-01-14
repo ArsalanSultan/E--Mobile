@@ -35,6 +35,7 @@ function Orders() {
     setCurrentPage(selected);
   };
 
+  // pagination start end and currentData
   const start = currentPage * perPage;
   const end = start + perPage;
   const currentData = allOrders.slice(start, end);
@@ -88,6 +89,7 @@ function Orders() {
     });
   };
 
+  // handle delete api call
   const handleDelete = (id) => {
     const token = localStorage.getItem("accessToken");
     axios
