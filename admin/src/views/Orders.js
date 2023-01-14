@@ -57,7 +57,6 @@ function Orders() {
 
         console.log("all orders", res.data.orders);
         setIsLoading(false);
-=======
         console.log("Orderss", res.data.orders);
       }).then(()=>setIsLoading(false))
       .catch((err) => {
@@ -115,7 +114,7 @@ function Orders() {
         setIsLoading(false);
       });
 
-  }, []);
+     
 
   // Process update
   useEffect(() => {
@@ -145,10 +144,12 @@ function Orders() {
         .then((res) => {
           console.log(res);
           toast.success("Order Status Updated!");
+          setIsLoading(false);
         })
         .catch((err) => {
           console.log(err);
           toast.error("Some error occured while updating order status");
+          setIsLoading(false);
         });
     }
   };
