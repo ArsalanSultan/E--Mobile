@@ -252,7 +252,7 @@ const changePassword = async (req, res, next) => {
 //update user profile => /api/v1/me/update
 
 const updateProfile = async (req, res, next) => {
-  try {
+  try{
   
   const newUserData = {
     name: req.body.name,
@@ -293,7 +293,8 @@ const updateProfile = async (req, res, next) => {
     },
     user
   );
-});
+  
+;
 
   res.status(200).json({
     success: true,

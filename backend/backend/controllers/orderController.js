@@ -2,8 +2,6 @@ const Order = require("../Models/order");
 const Product = require("../Models/product");
 const User = require("../Models/user");
 const ErrorHandler = require("../utils/errorHandler");
-
-const { catchAsyncErrors } = require("../middlewares/catchAsyncError");
 const mongoose = require("mongoose");
 
 // create new order => api/v1/order/new
@@ -114,8 +112,7 @@ const myOrders = async (req, res, next) => {
 
 // Get all orders - ADMIN  =>   /api/v1/admin/orders/
 
-const allOrders = catchAsyncErrors(async (req, res, next) => {
-  const orders = await Order.find().populate("user", "name email");
+
 
 const allOrders = async (req, res, next) => {
   try {
@@ -145,8 +142,7 @@ const allOrders = async (req, res, next) => {
 
 // Update / Process order - ADMIN  =>   /api/v1/admin/order/:id
 
-const updateOrder = catchAsyncErrors(async (req, res, next) => {
-  const { orderStatus } = req.body;
+
 
 const updateOrder = async (req, res, next) => {
   try {
