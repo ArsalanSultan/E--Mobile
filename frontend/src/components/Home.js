@@ -122,8 +122,8 @@ const Home = () => {
               <Pagination
                 activePage={currentPage}
                 // activePage={1}
-                itemsCountPerPage={4}
-                totalItemsCount={20}
+                itemsCountPerPage={resPerPage}
+                totalItemsCount={productsCount}
                 pageRangeDisplayed={resPerPage}
                 itemClass="page-item"
                 linkClass="page-link"

@@ -54,7 +54,6 @@ function Orders() {
       .then((res) => {
         //const { data } = res;
         setAllOrders(res.data.orders);
-
         console.log("all orders", res.data.orders);
         setIsLoading(false);
         console.log("Orderss", res.data.orders);

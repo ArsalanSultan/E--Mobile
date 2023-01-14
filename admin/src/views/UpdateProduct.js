@@ -22,7 +22,7 @@ function UpdateProduct() {
   // loading state
   const [isloading, setIsloading] = useState(false);
   // state hook to store data for the provided product id
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   // useHistory
   const history = useHistory();
   const params = useParams();
@@ -32,14 +32,23 @@ function UpdateProduct() {
   // API url
   const url = "http://localhost:5001/api/v1/admin/product";
 
-  const SetFormData = () => {
-    setName(data.product.name);
-    setBrand(data.product.brand);
-    setPrice(data.product.price);
-    setStock(data.product.stock);
-    setDescription(data.product.description);
-    setError("");
-  };
+  // const SetFormData = () => {
+  //   setName(data.product.name);
+  //   setBrand(data.product.brand);
+  //   setPrice(data.product.price);
+  //   setStock(data.product.stock);
+  //   setDescription(data.product.description);
+  //   setError("");
+  // };
+  useEffect(()=>{
+    if(data) {
+      setName(data.product.name);
+      setBrand(data.product.brand);
+      setPrice(data.product.price);
+      setStock(data.product.stock);
+      setDescription(data.product.description);
+    }
+  },[data])
   // getting user data and setting it in the form on load
   useEffect(() => {
     setIsloading(true);
@@ -49,7 +58,7 @@ function UpdateProduct() {
         setError("");
         setData(res.data);
         console.log(res.data);
-        SetFormData();
+        // SetFormData();
         setIsloading(false);
       })
       .catch((err) => {
