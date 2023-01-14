@@ -1,11 +1,13 @@
 const Product = require("../Models/product");
 const ErrorHandler = require("../utils/errorHandler");
-const { catchAsyncErrors } = require("../middlewares/catchAsyncError");
-const APIFeatures = require("../utils/apiFeatures");
+
+const APIFeatures = require("../utils/functionalities");
 const cloudinary = require("cloudinary");
 //create a new product =>api/v1/product/new
 
-const newProduct = catchAsyncErrors(async (req, res, next) => {
+const newProduct = async (req, res, next) => {
+  try {
+ 
   // req.body.user =  req.body.id;
   const { name, price, description, brand, seller, stock } = req.body;
 
@@ -30,12 +32,18 @@ const newProduct = catchAsyncErrors(async (req, res, next) => {
   res.status(201).json({
     success: true,
     product,
-  });
-});
+  })
+} catch (error) {
+    res.send(error)
+};
+};
 
 //get single product =>api/v1/product/:id
 
-const getProductById = catchAsyncErrors(async (req, res, next) => {
+const getProductById = async (req, res, next) => {
+  try {
+    
+  
   const product = await Product.findById(req.params.id);
   if (!product) {
     next(new ErrorHandler("Product not found", 404));
@@ -45,10 +53,16 @@ const getProductById = catchAsyncErrors(async (req, res, next) => {
       product,
     });
   }
-});
+} catch (error) {
+    res.send(error)
+}
+};
 
 //getall the products => api/vi/products
-const getProducts = catchAsyncErrors(async (req, res, next) => {
+const getProducts = async (req, res, next) => {
+  try {
+    
+  
   const resPerpage = 8;
   productsCount = await Product.countDocuments();
 
@@ -65,11 +79,16 @@ const getProducts = catchAsyncErrors(async (req, res, next) => {
     resPerpage,
     products,
   });
-});
+} catch (error) {
+    res.send(error)
+}
+};
 
 //update product =>api/v1/admin/product/:id
 
-const updateProduct = catchAsyncErrors(async (req, res, next) => {
+const updateProduct = async (req, res, next) => {
+  try {
+   
   //let product = await Product.findById(req.params.id);
   const product = await Product.findByIdAndUpdate(
     req.params.id,
@@ -87,20 +106,32 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
       product,
     });
   }
-});
+   
+} catch (error) {
+    res.send(error)
+}
+};
 // delete product =>api/v1/admin/product/:id
 
-const deleteProduct = catchAsyncErrors(async (req, res, next) => {
+const deleteProduct = async (req, res, next) => {
+  try {
+   
   const product = await Product.findByIdAndRemove(req.params.id);
   if (!product) {
     next(new ErrorHandler("Product not found", 404));
   } else {
     res.status(200).json("product has been deleted");
   }
-});
+   
+} catch (error) {
+    res.send(error)
+}
+};
 
 // Create new review   =>   /api/v1/review
-const createProductReview = catchAsyncErrors(async (req, res, next) => {
+const createProductReview = async (req, res, next) => {
+  try {
+   
   const { rating, comment, productId } = req.body;
 
   const review = {
@@ -137,20 +168,32 @@ const createProductReview = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+};
 
 // Get Product Reviews   =>   /api/v1/reviews
-const getProductReviews = catchAsyncErrors(async (req, res, next) => {
+const getProductReviews = async (req, res, next) => {
+  try {
+   
   const product = await Product.findById(req.query.id);
 
   res.status(200).json({
     success: true,
     reviews: product.reviews,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+};
 
 // Delete Product Review   =>   /api/v1/reviews
-const deleteReview = catchAsyncErrors(async (req, res, next) => {
+const deleteReview = async (req, res, next) => {
+  try {
+   
   const product = await Product.findById(req.query.productId);
 
   console.log(product);
@@ -182,7 +225,11 @@ const deleteReview = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
   });
-});
+   
+} catch (error) {
+    res.send(error)
+}
+}
 
 exports.newProduct = newProduct;
 exports.getProducts = getProducts;
