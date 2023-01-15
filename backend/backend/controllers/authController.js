@@ -1,16 +1,29 @@
 const User = require("../Models/user");
 
 const ErrorHandler = require("../utils/errorHandler");
-const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary");
+
+const jwtToken=(user,statusCode,res) =>{
+ 
+  //generate jwt token
+
+  const accessToken = user.getJwtToken();
+
+    //const {password, ...info} = user._doc;
+      //res.status(200).json(info);
+
+  res.status(statusCode).json({ accessToken, user})
+
+}
+
 
 // register user
 const registerUser = async(req,res,next) =>{
   try {
    
-  const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+  const photo = await cloudinary.v2.uploader.upload(req.body.avatar, {
     folder: 'avatars',
     width: 150,
     crop: "scale"
@@ -23,17 +36,17 @@ const user = await User.create({
     email,
     password,
     avatar: {
-        public_id: result.public_id,
-        url: result.secure_url
+        public_id: photo.public_id,
+        url: photo.secure_url
     }
 })
 
-sendToken(user, 200, res)
+jwtToken(user, 200, res)
 
 
  
 } catch (error) {
-    res.status(400).json(error)
+    return res.status(400).json(error)
 }
 
 
@@ -72,7 +85,7 @@ sendToken(user, 200, res)
 //       await sendEmail({ email, subject: "Email Verification", message });
 //       res.send({ message: "Plase Verify your email" });
    
-//     sendToken(user, 200, res);
+//     jwtToken(user, 200, res);
 //   } catch (error) {
 //     res.status(400).json(error);; //
 //   }
@@ -89,7 +102,7 @@ const registerUserWithGoogle = async (req, res, next) => {
       password,
     });
 
-    sendToken(user, 200, res);
+    jwtToken(user, 200, res);
   } catch (error) {
     res.send(error);
   }
@@ -101,23 +114,23 @@ const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     // check if user has entered email and password
     if (!email || !password) {
-      throw new ErrorHandler("please enter email & password", 400);
+      return res.status(400).json('please enter email & password')
+      
     }
     //finding user db
-    const user = await User.findOne({ email: req.body.email }).select("+password");
+    const user = await User.findOne({ email: req.body.email })
 
     if (!user) {
-      throw new ErrorHandler("Invalid Email or password", 401);
+      return res.status(401).json('invalid email & password')
     }
 
     //checks if password is correct or not
     const isPasswordMatched = await user.comparePassword(password);
     if (!isPasswordMatched) {
-      throw new ErrorHandler("Invalid Email or password", 401);
+      return res.status(401).json('invalid email & password')
     } else {
-      //  const {password, ...info} = user._doc;
-      //  res.status(200).json(info);
-      sendToken(user, 200, res);
+     
+      jwtToken(user, 200, res);
     }
   } catch (error) {
     res.send(error);
@@ -131,30 +144,32 @@ const loginAdmin = async (req, res, next) => {
     const { email, password } = req.body;
     // check if user has entered email and password
     if (!email || !password) {
-      throw new ErrorHandler("please enter email & password", 400);
+      return res.status(400).json('please enter email & password')
+     
     }
     //finding user db
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email })
     //console.log(user,'user')
 
     if (!user) {
-      throw new ErrorHandler("Invalid Email or password", 401);
+      return res.status(401).json('Invalid Email or password')
+      
     }
     // checks role of the user
     const usser = await User.findOne({ email });
     //console.log(usser,'usser')
     if (usser.role !== "admin") {
-      //res.status(400).json({ error: "A user with this email already exist..."});
-      throw new ErrorHandler("User is not admin", 401);
+      return res.status(401).json('User is not admin')
+
     }
 
     //checks if password is correct or not
     const isPasswordMatched = await user.comparePassword(password);
     if (!isPasswordMatched) {
-      throw new ErrorHandler("Invalid Email or password", 401);
+      return res.status(401).json('Invalid Email or password')
     } else {
       // assign token to user
-      sendToken(user, 200, res);
+      jwtToken(user, 200, res);
     }
   } catch (error) {
     res.send(error);
@@ -166,7 +181,7 @@ const forgotPassword = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return next(new ErrorHandler("user not found", 404));
+      return res.status(404).json('Invalid Email')
     }
     const resetToken = user.getResetPassToken();
 
@@ -241,7 +256,7 @@ const getActiveUser = async (req, res, next) => {
     // console.log("req === ",req.user)
     const user = await User.findById(req.user.id);
 
-    sendToken(user, 200, res);
+    jwtToken(user, 200, res);
   } catch (error) {
     res.send(error);
   }
@@ -260,7 +275,7 @@ const changePassword = async (req, res, next) => {
 
       await user.save();
 
-      sendToken(user, 200, res);
+      jwtToken(user, 200, res);
     }
   } catch (error) {
     res.send(error);

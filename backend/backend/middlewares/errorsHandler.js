@@ -1,7 +1,7 @@
 // const { stack } = require('../app');
 const ErrorHandler = require('../utils/errorHandler');
 
-const errorMiddleware=(err,req,res,next)=>{
+const errorsHandler=(err,req,res,next)=>{
     err.statusCode = err.statusCode || 500;
 if(process.env.NODE_ENV === 'DEVELOPMENT'){
     res.status(err.statusCode).json({
@@ -56,4 +56,4 @@ if(process.env.NODE_ENV === 'DEVELOPMENT'){
    
 }
 
-exports.errorMiddleware=errorMiddleware;
+exports.errorsHandler=errorsHandler;

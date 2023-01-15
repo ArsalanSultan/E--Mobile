@@ -63,7 +63,7 @@ const getProducts = async (req, res, next) => {
   try {
     
   
-  const resPerpage = 8;
+  const resPerpage = 11;
   productsCount = await Product.countDocuments();
 
   const apiFeatures = new APIFeatures(Product.find(), req.query)
@@ -128,114 +128,9 @@ const deleteProduct = async (req, res, next) => {
 }
 };
 
-// Create new review   =>   /api/v1/review
-const createProductReview = async (req, res, next) => {
-  try {
-   
-  const { rating, comment, productId } = req.body;
-
-  const review = {
-    user: req.user._id,
-    name: req.user.name,
-    rating: Number(rating),
-    comment,
-  };
-
-  const product = await Product.findById(productId);
-
-  const isReviewed = product.reviews.find(
-    (r) => r.user.toString() === req.user._id.toString()
-  );
-
-  if (isReviewed) {
-    product.reviews.forEach((review) => {
-      if (review.user.toString() === req.user._id.toString()) {
-        review.comment = comment;
-        review.rating = rating;
-      }
-    });
-  } else {
-    product.reviews.push(review);
-    product.numOfReviews = product.reviews.length;
-  }
-
-  product.ratings =
-    product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-    product.reviews.length;
-
-  await product.save({ validateBeforeSave: false });
-
-  res.status(200).json({
-    success: true,
-  });
-   
-} catch (error) {
-    res.send(error)
-}
-};
-
-// Get Product Reviews   =>   /api/v1/reviews
-const getProductReviews = async (req, res, next) => {
-  try {
-   
-  const product = await Product.findById(req.query.id);
-
-  res.status(200).json({
-    success: true,
-    reviews: product.reviews,
-  });
-   
-} catch (error) {
-    res.send(error)
-}
-};
-
-// Delete Product Review   =>   /api/v1/reviews
-const deleteReview = async (req, res, next) => {
-  try {
-   
-  const product = await Product.findById(req.query.productId);
-
-  console.log(product);
-
-  const reviews = product.reviews.filter(
-    (review) => review._id.toString() !== req.query.id.toString()
-  );
-
-  const numOfReviews = reviews.length;
-
-  const ratings =
-    product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-    reviews.length;
-
-  await Product.findByIdAndUpdate(
-    req.query.productId,
-    {
-      reviews,
-      ratings,
-      numOfReviews,
-    },
-    {
-      new: true,
-      runValidators: true,
-      useFindAndModify: false,
-    }
-  );
-
-  res.status(200).json({
-    success: true,
-  });
-   
-} catch (error) {
-    res.send(error)
-}
-}
 
 exports.newProduct = newProduct;
 exports.getProducts = getProducts;
 exports.getProductById = getProductById;
 exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
-exports.createProductReview = createProductReview;
-exports.getProductReviews = getProductReviews;
-exports.deleteReview = deleteReview;

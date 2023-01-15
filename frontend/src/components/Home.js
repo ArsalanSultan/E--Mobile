@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import MetaData from "./Layouts/MetaData";
-import Slider from "rc-slider";
+//import Slider from "rc-slider";
 import "../App.css";
 import "rc-slider/assets/index.css";
 
@@ -18,7 +18,7 @@ import { useParams } from "react-router-dom";
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [price, setPrice] = useState([1, 1000000]);
+  //const [price, setPrice] = useState([1, 1000000]);
   const [brand, setBrand] = useState("");
 
   const allbrands = [
@@ -52,8 +52,8 @@ const Home = () => {
 
     // }
     //
-    dispatch(getProducts(keyword, currentPage, price, brand));
-  }, [dispatch, currentPage, price, keyword, brand]);
+    dispatch(getProducts(keyword, currentPage,  brand));
+  }, [dispatch, currentPage,  keyword, brand]);
 
   function setCurrentPageNo(pageNumber) {
     setCurrentPage(pageNumber);
@@ -73,7 +73,7 @@ const Home = () => {
               <Fragment>
                 <div className="col-6 col-md-3 mt-5 mb-5">
                   <div className="px-5">
-                    <Slider
+                    {/* <Slider
                       range
                       marks={{
                         1: `$1`,
@@ -89,7 +89,7 @@ const Home = () => {
                       }}
                       //value={price}
                       onChange={(price) => setPrice(price)}
-                    />
+                    /> */}
 
                     <hr className="my-5" />
                     <div className="mt-5">
