@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import MetaData from "../Layouts/MetaData";
 
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../../actions/userActions";
+import { register ,clearError} from "../../actions/userActions";
 import { useAlert } from "react-alert";
 
 const Register = () => {
@@ -31,7 +31,8 @@ const Register = () => {
   );
   useEffect(() => {
     if (error) {
-      return alert.error(error);
+     alert.error(error);
+      dispatch(clearError())
     }
     if (isAuthenticated) {
       alert.success("User Registered and Logged In");
@@ -47,6 +48,7 @@ const Register = () => {
     formData.set("email", email);
     formData.set("password", password);
     formData.set("avatar", avatar);
+    console.log('above from data')
     dispatch(register(formData));
   };
   const onChange = (e) => {

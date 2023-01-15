@@ -36,7 +36,7 @@ if(process.env.NODE_ENV === 'DEVELOPMENT'){
             error = new ErrorHandler(message,400)
           }
 
-
+ 
           //Handling wrong jwt error
           if(err.name==='JsonWebTokenError'){
             const message = `json web token is invalid`

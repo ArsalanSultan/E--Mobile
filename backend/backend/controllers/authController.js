@@ -7,45 +7,76 @@ const crypto = require("crypto");
 const cloudinary = require("cloudinary");
 
 // register user
-const registerUser = async (req, res, next) => {
+const registerUser = async(req,res,next) =>{
   try {
-    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-      folder: "avatars",
-      width: 150,
-      crop: "scale",
-    });
+   
+  const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+    folder: 'avatars',
+    width: 150,
+    crop: "scale"
+})
 
-    const { name, email, password } = req.body;
+const { name, email, password } = req.body;
 
-    const emailVerificationToken = crypto.randomBytes(20).toString("hex");
-    const emailVerificationTokenExpiry = Date.now() + 3600000; // 1 hour
-
-    const user = await User.create({
-      name,
-      email,
-      password,
-      avatar: {
+const user = await User.create({
+    name,
+    email,
+    password,
+    avatar: {
         public_id: result.public_id,
-        url: result.secure_url,
-      },
-      emailVerified: false,
-      emailVerificationToken,
-      emailVerificationTokenExpiry,
-    });
-
-    const verificationUrl = `http://localhost:3000/verify-email?${emailVerificationToken}`;
-    const message = `Please click on the following link to verify your email address:\n\n${verificationUrl}\n\nIf you have not requested this email then ignore it.`;
-    try {
-      await sendEmail({ email, subject: "Email Verification", message });
-      res.send({ message: "Plase Verify your email" });
-    } catch (err) {
-      console.log(err);
+        url: result.secure_url
     }
-    sendToken(user, 200, res);
-  } catch (error) {
-    res.send(error);
-  }
-};
+})
+
+sendToken(user, 200, res)
+
+
+ 
+} catch (error) {
+    res.status(400).json(error)
+}
+
+
+}
+
+
+// const registerUser = async (req, res, next) => {
+//   try {
+//     // const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+//     //   folder: "avatars",
+//     //   width: 150,
+//     //   crop: "scale",
+//     // });
+
+//     const { name, email, password } = req.body;
+
+//     const emailVerificationToken = crypto.randomBytes(20).toString("hex");
+//     const emailVerificationTokenExpiry = Date.now() + 3600000; // 1 hour
+
+//     const user = await User.create({
+//       name,
+//       email,
+//       password,
+//       avatar: {
+//         public_id: 'hwge',//result.public_id,
+//         url:'edjbwjkbkx' //result.secure_url,
+//       },
+//       emailVerified: false,
+//       emailVerificationToken,
+//       emailVerificationTokenExpiry,
+//     });
+ 
+//     const verificationUrl = `http://localhost:3000/verify-email?${emailVerificationToken}`;
+//     const message = `Please click on the following link to verify your email address:\n\n${verificationUrl}\n\nIf you have not requested this email then ignore it.`;
+ 
+//       await sendEmail({ email, subject: "Email Verification", message });
+//       res.send({ message: "Plase Verify your email" });
+   
+//     sendToken(user, 200, res);
+//   } catch (error) {
+//     res.status(400).json(error);; //
+//   }
+// };
 
 // register user with google account => api/v1/register/google
 
