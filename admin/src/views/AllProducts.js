@@ -46,7 +46,7 @@ function AllProducts() {
     axios
       .get("http://localhost:5001/api/v1/products")
       .then((data) => {
-        console.log(data.data.products);
+        // console.log(data.data.products);
         setData(data.data);
         setAllProducts(data.data.products);
 

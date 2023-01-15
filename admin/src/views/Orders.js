@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 // react-bootstrap components
 import { Card, Table, Container, Row, Col, Form } from "react-bootstrap";
+import { Link, useHistory } from "react-router-dom";
 
 // import pagination
 import Pagination from "react-paginate";
@@ -17,10 +18,12 @@ import { toast, ToastContainer } from "react-toastify";
 import "./Order.css";
 import Loader from "./sharedUI/Loader";
 function Orders() {
+  const history = useHistory();
+
   //const order status
   const [orderStatus, setOrderStatus] = useState("");
   const [allOrders, setAllOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // pagination
   const [currentPage, setCurrentPage] = useState(0);
@@ -32,6 +35,7 @@ function Orders() {
     setCurrentPage(selected);
   };
 
+  // pagination start end and currentData
   const start = currentPage * perPage;
   const end = start + perPage;
   const currentData = allOrders.slice(start, end);
@@ -40,10 +44,7 @@ function Orders() {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    setIsLoading(true);
-    // if (isLoading) {
-    //   toast.promise("Getting data");
-    // }
+
     axios
       .get("http://localhost:5001/api/v1/admin/orders/", {
         headers: {
@@ -53,15 +54,13 @@ function Orders() {
       .then((res) => {
         //const { data } = res;
         setAllOrders(res.data.orders);
-        console.log("all orders", res.data.orders);
         setIsLoading(false);
-        console.log("Orderss", res.data.orders);
       })
-      .then(() => setIsLoading(false))
       .catch((err) => {
         console.log(err);
+        setIsLoading(false);
       });
-  }, []);
+  }, [isLoading]);
 
   const Notification = (title, text, icon) => {
     Swal.fire({
@@ -72,10 +71,11 @@ function Orders() {
     });
   };
 
+  // handle deletion confirmation
   const handleDeleteAlert = (id) => {
     confirmAlert({
       title: "Delete",
-      message: "Are you sure to delete this user.",
+      message: "Are you sure to do this.",
       buttons: [
         {
           label: "Yes",
@@ -89,6 +89,7 @@ function Orders() {
     });
   };
 
+  // handle delete api call
   const handleDelete = (id) => {
     const token = localStorage.getItem("accessToken");
     axios
@@ -99,51 +100,55 @@ function Orders() {
       })
 
       .then((res) => {
-        Notification("Deleted", res.data.message, "success");
-        setIsLoading(true);
+        console.log("res order deleted = ", res.data);
+        // toast.success("Order Deleted Succesfully");
+        if (res.data.success) {
+          Notification("Deleted", res.data.message, "success");
+          setIsLoading(true);
+        }
       })
       .catch((err) => {
         console.log(err);
         setIsLoading(false);
       });
+  };
 
-    // Process update
-    useEffect(() => {
-      console.log(orderStatus);
-    }, [orderStatus]);
+  // Process update
+  useEffect(() => {
+    console.log(orderStatus);
+  }, [orderStatus]);
 
-    // updateProductStatus
+  // updateProductStatus
 
-    const updateProductStatus = (id) => {
-      console.log("The product id", id, orderStatus);
-      const token = localStorage.getItem("accessToken");
-      if (token) {
-        console.log(token);
-        axios
-          .put(
-            `http://localhost:5001/api/v1/admin/order/${id}`,
-            {
-              Headers: {
-                token: `Bearer ${token}`,
-              },
+  const updateProductStatus = (id) => {
+    console.log("The product id", id, orderStatus);
+    const token = localStorage.getItem("accessToken");
+    if (token && id) {
+      console.log("token and id is here", token, id);
+      axios
+        .put(
+          `http://localhost:5001/api/v1/admin/order/${id}`,
+          {
+            Headers: {
+              token: `Bearer ${token}`,
             },
-            {
-              id,
-              orderStatus,
-            }
-          )
-          .then((res) => {
-            console.log(res);
-            toast.success("Order Status Updated!");
-            setIsLoading(false);
-          })
-          .catch((err) => {
-            console.log(err);
-            toast.error("Some error occured while updating order status");
-            setIsLoading(false);
-          });
-      }
-    };
+          },
+          {
+            id,
+            orderStatus,
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          // toast.success("Order Status Updated!");
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Some error occured while updating order status");
+          setIsLoading(false);
+        });
+    }
   };
 
   return (
@@ -212,7 +217,7 @@ function Orders() {
                             </button>
                             <button
                               type="button"
-                              class="btn btn-default btn-sm"
+                              class="btn btn-default btn-sm m-1"
                               onClick={() => handleDeleteAlert(item._id)}
                             >
                               <span class="glyphicon glyphicon-trash"></span>{" "}
@@ -224,23 +229,30 @@ function Orders() {
                     )}
                   </tbody>
                 </Table>
+                {!isLoading && currentData.length === 0 && (
+                  <div className="alert alert-danger text-center w-50 mx-auto">
+                    No Orders to display
+                  </div>
+                )}
               </Card.Body>
             </Card>
-            <Col md="8" className="text-center mx-auto">
-              <Pagination
-                previousLabel={"<"}
-                nextLabel={">"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={Math.ceil(allOrders.length / perPage)}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination "}
-                subContainerClassName={"pages pagination"}
-                activeClassName={"active"}
-              />
-            </Col>
+            {currentData.length > 0 && (
+              <Col md="8" className="text-center mx-auto">
+                <Pagination
+                  previousLabel={"<"}
+                  nextLabel={">"}
+                  breakLabel={"..."}
+                  breakClassName={"break-me"}
+                  pageCount={Math.ceil(allOrders.length / perPage)}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={"pagination "}
+                  subContainerClassName={"pages pagination"}
+                  activeClassName={"active"}
+                />
+              </Col>
+            )}
           </Col>
         </Row>
         <ToastContainer />
