@@ -104,7 +104,7 @@ const loginUser = async (req, res, next) => {
       throw new ErrorHandler("please enter email & password", 400);
     }
     //finding user db
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email: req.body.email }).select("+password");
 
     if (!user) {
       throw new ErrorHandler("Invalid Email or password", 401);
@@ -135,13 +135,16 @@ const loginAdmin = async (req, res, next) => {
     }
     //finding user db
     const user = await User.findOne({ email }).select("+password");
+    //console.log(user,'user')
 
     if (!user) {
       throw new ErrorHandler("Invalid Email or password", 401);
     }
     // checks role of the user
     const usser = await User.findOne({ email });
+    //console.log(usser,'usser')
     if (usser.role !== "admin") {
+      //res.status(400).json({ error: "A user with this email already exist..."});
       throw new ErrorHandler("User is not admin", 401);
     }
 

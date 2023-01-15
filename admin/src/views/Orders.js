@@ -129,19 +129,20 @@ function Orders() {
         .put(
           `http://localhost:5001/api/v1/admin/order/${id}`,
           {
+            id,
+            orderStatus,
+          },
+          {
             Headers: {
               token: `Bearer ${token}`,
             },
-          },
-          {
-            id,
-            orderStatus,
           }
+         
         )
         .then((res) => {
           console.log(res);
-          // toast.success("Order Status Updated!");
-          setIsLoading(false);
+          toast.success("Order Status Updated!");
+          setIsLoading(true);
         })
         .catch((err) => {
           console.log(err);

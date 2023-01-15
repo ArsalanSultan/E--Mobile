@@ -49,7 +49,7 @@ const Profile = () => {
 
                   <h4>Address</h4>
 
-                  <p>User Address</p>
+                  <p>Lahore</p>
 
                   <Link to="/orders/me" class="btn btn-danger btn-block mt-5">
                     My Orders
