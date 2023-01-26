@@ -5,8 +5,9 @@ import { clearErrors } from '../../actions/productActions'
 import MetaData from '../Layouts/MetaData'
 import CheckOutSteps from './CheckOutSteps'
 import { createOrder } from '../../actions/orderActions'
-
-
+import { useStripe,useElements,CardNumberElement, CardExpiryElement, CardCvcElement} from '@stripe/react-stripe-js'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const options = {
     style: {
@@ -19,8 +20,12 @@ const options = {
     }
 }
 const Payment = () => {
+  const navigate = useNavigate()
     const dispatch = useDispatch();
     const alert = useAlert();
+    const stripe = useStripe();
+    const elements = useElements();
+
 
     const { user } = useSelector(state => state.auth)
     const { cartItems,shippingInfo } = useSelector(state => state.cart);
@@ -50,12 +55,72 @@ const Payment = () => {
         order.taxPrice = orderInfo.taxPrice
         order.totalPrice = orderInfo.totalPrice
     }
+
+    const paymentData = {
+      amount: Math.round(order.totalPrice * 100)
+    }
+
+const SubmitHandler= async (e)=>{
+  e.preventDefault();
+
+  document.querySelector('#pay_btn').disabled = true;
+
+  let res;
+
+  try {
+    const config ={
+      headers:{
+        'Content-Type':'application/json'
+      }
+    }
+       
+    res = await axios.post('/api/v1/payment/process',paymentData,config)
+
+    const clientSecret = res.data.client_secret
+    if(!stripe || !elements){
+      return
+    }
+
+    const result = await stripe.confirmCardPayment(clientSecret,{
+      payment_method:{
+        card: elements.getElement(CardNumberElement),
+        billing_details:{
+          name: user.name,
+          email: user.email
+        }
+      }
+    })
+
+    if(result.error){
+      alert.error(result.error.message);
+      document.querySelector('#pay_btn').disabled = false;
+    }else{
+      if(result.paymentIntent.status ==='succeeded'){
+         alert.success('done')
+         navigate('/success')
+         
+      }else{
+        alert.error('some error')
+      }
+    }
+
+  } catch (error) {
+    
+    document.querySelector('#pay_btn').disabled = false;
+    alert.error(error.response.data.message)
+
+
+  }
+
+
+}
+
 const createNewOrder=()=>{
 
-    // console.log(order, "orderorderorder")
-    dispatch(createOrder(order))
-    alert.success('Order Placed')
-    console.log(order)
+  // console.log(order, "orderorderorder")
+  dispatch(createOrder(order))
+  alert.success('Order Placed')
+  console.log(order)
 
 }
 
@@ -64,23 +129,23 @@ const createNewOrder=()=>{
          <MetaData title={'Payment'} />
 
 <CheckOutSteps shipping confirmOrder payment />
-        
-        {/* <div className="col-10 col-lg-5"> */}
-            {/* <form className="shadow-lg" onSubmit={createNewOrder}> */}
-                {/* <h1 className="mb-4">Card Info</h1>
+<div class="row wrapper">
+<div className="col-10 col-lg-5">
+            <form className="shadow-lg" onSubmit={SubmitHandler}>
+                <h1 className="mb-4">Card Info</h1>
                 <div className="form-group">
                   <label htmlFor="card_num_field">Card Number</label>
-                  <input
+                  <CardNumberElement
                     type="text"
                     id="card_num_field"
                     className="form-control"
-                    options={options}
+                     options={options}
                   />
                 </div>
 				
 				<div className="form-group">
                   <label htmlFor="card_exp_field">Card Expiry</label>
-                  <input
+                  <CardExpiryElement
                     type="text"
                     id="card_exp_field"
                     className="form-control"
@@ -90,34 +155,33 @@ const createNewOrder=()=>{
 				
 				<div className="form-group">
                   <label htmlFor="card_cvc_field">Card CVC</label>
-                  <input
+                  <CardCvcElement
                     type="text"
                     id="card_cvc_field"
                     className="form-control"
                     options={options}
                   />
-                </div> */}
+                </div>
       
             
                 <button
                   id="pay_btn"
-                 // type="submit"
-                 // className="btn btn-block py-3 "
-                 onClick={createNewOrder}
-                > 
+                  type="submit"
+                  className="btn btn-block py-3"
+                >
                   Pay {` - ${orderInfo && orderInfo.totalPrice}`}
                 </button>
     
-              {/* </form> */}
-			  {/* </div> */}
-      
+              </form>
+			  </div>
+      </div>
     </Fragment>
     
   )
 }
 
 export default Payment
-const orderInfo = JSON.parse(localStorage.getItem('orderInfo'));
+//const orderInfo = JSON.parse(localStorage.getItem('orderInfo'));
     // if (orderInfo) {
     //     order.itemsPrice = orderInfo.itemsPrice
     //     order.shippingPrice = orderInfo.shippingPrice

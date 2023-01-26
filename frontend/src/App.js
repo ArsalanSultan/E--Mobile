@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Fragment, useEffect,useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Layouts/Header";
 import Footer from "./components/Layouts/Footer";
@@ -22,9 +22,22 @@ import Orders from "./components/orders/Orders";
 import ConfirmOrder from "./components/cart/ConfirmOrder";
 import LoginWithGoogle from "./components/user/LoginWithGoogle";
 import Payment from "./components/cart/Payment";
+import axios from 'axios'
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from '@stripe/stripe-js'
 function App() {
+
+   const [stripeApiKey,setStripeApiKey] = useState('')
+   //console.log(stripeApiKey)
+
   useEffect(() => {
     store.dispatch(loadUser());
+    
+    async function getStripeApiKey(){
+      const { data } = await axios.get('/api/v1/stripeapi')
+      setStripeApiKey(data.stripeApiKey )
+    }
+    getStripeApiKey()
   }, []);
 
   return (
@@ -59,7 +72,20 @@ function App() {
           {/* orders */}
           <Route path="/orders/me" element={<Orders />} />
           <Route path="/order/confirm" element={<ConfirmOrder />} exact />
-            <Route path="/payment" element={<Payment />} exact />
+          
+          {stripeApiKey && 
+         
+              
+              <Route path="/payment" element={ 
+              <Elements stripe={loadStripe(stripeApiKey)}>
+              <Payment />
+            </Elements>
+            } exact />
+             
+    
+
+          }
+            
           <Route path="/google" element={<LoginWithGoogle />} />
         </Routes>
         <Footer />
